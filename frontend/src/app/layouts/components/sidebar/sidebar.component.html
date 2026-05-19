@@ -1,0 +1,55 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="collapsed()"
+  [class.mobile-open]="mobileOpen()"
+>
+  <div class="sidebar__logo">
+    @if (!collapsed()) {
+      <span class="sidebar__logo-text">MGF</span>
+    } @else {
+      <span class="sidebar__logo-icon">M</span>
+    }
+  </div>
+
+  <nav class="sidebar__nav">
+    <a
+      class="sidebar__nav-item"
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+    >
+      <svg lucideLayoutDashboard [size]="20" class="sidebar__nav-icon"></svg>
+      @if (!collapsed()) {
+        <span class="sidebar__nav-label">Dashboard</span>
+      }
+    </a>
+
+    <a
+      class="sidebar__nav-item"
+      routerLink="/receitas"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+    >
+      <svg lucideTrendingUp [size]="20" class="sidebar__nav-icon"></svg>
+      @if (!collapsed()) {
+        <span class="sidebar__nav-label">Receitas</span>
+      }
+    </a>
+
+    <a
+      class="sidebar__nav-item"
+      routerLink="/despesas"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+    >
+      <svg lucideCreditCard [size]="20" class="sidebar__nav-icon"></svg>
+      @if (!collapsed()) {
+        <span class="sidebar__nav-label">Despesas</span>
+      }
+    </a>
+  </nav>
+</aside>
+
+@if (mobileOpen()) {
+  <div class="sidebar__overlay" (click)="closeMobile.emit()"></div>
+}

@@ -1,0 +1,45 @@
+<div class="income-page">
+  <div class="income-page__header">
+    <div>
+      <h2>Receitas</h2>
+      <p class="income-page__subtitle">Gerencie suas fontes de renda</p>
+    </div>
+    <button class="btn btn--primary" (click)="openCreateModal()">
+      <svg lucidePlus [size]="18"></svg>
+      Nova Receita
+    </button>
+  </div>
+
+  <div class="income-page__summary">
+    <span class="income-page__summary-label">Total do mês</span>
+    <span class="income-page__summary-value">{{ formattedTotal() }}</span>
+  </div>
+
+  @if (incomes().length > 0) {
+    <div class="income-page__list">
+      @for (income of incomes(); track income.id) {
+        <app-income-card
+          [income]="income"
+          (edit)="openEditModal($event)"
+          (remove)="onDelete($event)"
+        />
+      }
+    </div>
+  } @else {
+    <div class="income-page__empty">
+      <svg lucideInbox [size]="48"></svg>
+      <h3>Nenhuma receita neste mês</h3>
+      <p>Adicione sua primeira receita clicando no botão acima.</p>
+    </div>
+  }
+</div>
+
+@if (showModal()) {
+  <app-income-modal
+    [income]="editingIncome()"
+    [currentMonth]="currentMonth()"
+    [currentYear]="currentYear()"
+    (save)="onSave($event)"
+    (close)="closeModal()"
+  />
+}

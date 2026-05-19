@@ -1,0 +1,41 @@
+<div class="summary-grid">
+  <div class="summary-card card--income">
+    <div class="card-icon">
+      <svg lucideTrendingUp [size]="24"></svg>
+    </div>
+    <div class="card-content">
+      <span class="card-label">Total Receitas</span>
+      <span class="card-value">{{ balance().totalIncome | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="summary-card card--expense">
+    <div class="card-icon">
+      <svg lucideTrendingDown [size]="24"></svg>
+    </div>
+    <div class="card-content">
+      <span class="card-label">Total Despesas</span>
+      <span class="card-value">{{ balance().totalExpenses | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="summary-card" [ngClass]="balance().balance >= 0 ? 'card--balance-positive' : 'card--balance-negative'">
+    <div class="card-icon">
+      <svg lucideWallet [size]="24"></svg>
+    </div>
+    <div class="card-content">
+      <span class="card-label">Saldo</span>
+      <span class="card-value">{{ balance().balance | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="summary-card card--savings">
+    <div class="card-icon">
+      <svg lucidePiggyBank [size]="24"></svg>
+    </div>
+    <div class="card-content">
+      <span class="card-label">Taxa de Economia</span>
+      <span class="card-value">{{ balance().savingsRate | number: '1.1-1' }}%</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="chart-card">
+  <h3 class="chart-title">Evolução Mensal do Saldo</h3>
+  <p class="chart-subtitle">Últimos 12 meses</p>
+
+  <div class="chart-container">
+    <ngx-charts-line-chart
+      [results]="data()"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="false"
+      [showYAxisLabel]="false"
+      [legend]="false"
+      [scheme]="colorScheme"
+      [autoScale]="true"
+      [referenceLines]="referenceLines"
+      [showRefLines]="true"
+      [showRefLabels]="true"
+      [yAxisTickFormatting]="formatCurrency"
+      [animations]="true">
+    </ngx-charts-line-chart>
+  </div>
+</div>

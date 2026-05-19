@@ -1,0 +1,135 @@
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal">
+    <div class="modal__header">
+      <h3>{{ isEditMode() ? 'Editar Receita' : 'Nova Receita' }}</h3>
+      <button class="modal__close" type="button" (click)="close.emit()">
+        <svg lucideX [size]="20"></svg>
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modal__body">
+      <div class="form-group">
+        <label for="inc-description">Descrição *</label>
+        <input
+          id="inc-description"
+          type="text"
+          formControlName="description"
+          placeholder="Ex: Salário mensal"
+        />
+        @if (
+          form.get('description')?.touched &&
+          form.get('description')?.hasError('required')
+        ) {
+          <span class="form-error">Descrição é obrigatória</span>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inc-type">Tipo *</label>
+          <select id="inc-type" formControlName="type">
+            @for (t of incomeTypes; track t.value) {
+              <option [value]="t.value">{{ t.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="inc-amount">Valor (R$) *</label>
+          <input
+            id="inc-amount"
+            type="number"
+            formControlName="amount"
+            step="0.01"
+            min="0.01"
+            placeholder="0,00"
+          />
+          @if (
+            form.get('amount')?.touched &&
+            form.get('amount')?.hasError('required')
+          ) {
+            <span class="form-error">Valor é obrigatório</span>
+          }
+          @if (
+            form.get('amount')?.touched &&
+            form.get('amount')?.hasError('min')
+          ) {
+            <span class="form-error">Valor deve ser maior que zero</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inc-month">Mês *</label>
+          <select id="inc-month" formControlName="month">
+            <option [value]="1">Janeiro</option>
+            <option [value]="2">Fevereiro</option>
+            <option [value]="3">Março</option>
+            <option [value]="4">Abril</option>
+            <option [value]="5">Maio</option>
+            <option [value]="6">Junho</option>
+            <option [value]="7">Julho</option>
+            <option [value]="8">Agosto</option>
+            <option [value]="9">Setembro</option>
+            <option [value]="10">Outubro</option>
+            <option [value]="11">Novembro</option>
+            <option [value]="12">Dezembro</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="inc-year">Ano *</label>
+          <input
+            id="inc-year"
+            type="number"
+            formControlName="year"
+            min="2000"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inc-date">Data *</label>
+          <input id="inc-date" type="date" formControlName="date" />
+          @if (
+            form.get('date')?.touched &&
+            form.get('date')?.hasError('required')
+          ) {
+            <span class="form-error">Data é obrigatória</span>
+          }
+        </div>
+
+        <div class="form-group form-group--toggle">
+          <label class="toggle-label">
+            <input type="checkbox" formControlName="recurring" />
+            <span class="toggle-switch"></span>
+            Recorrente
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inc-notes">Observações</label>
+        <textarea
+          id="inc-notes"
+          formControlName="notes"
+          rows="3"
+          placeholder="Observações opcionais..."
+        ></textarea>
+      </div>
+
+      <div class="modal__footer">
+        <button
+          type="button"
+          class="btn btn--secondary"
+          (click)="close.emit()"
+        >
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn--primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

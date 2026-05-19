@@ -1,0 +1,111 @@
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal">
+    <div class="modal__header">
+      <h3>Adiantar Parcelas</h3>
+      <button class="modal__close" type="button" (click)="close.emit()">
+        <svg lucideX [size]="20"></svg>
+      </button>
+    </div>
+
+    <div class="modal__body">
+      <div class="advance-info">
+        <span class="advance-info__label">Parcelamento</span>
+        <span class="advance-info__value">{{ expense().description }}</span>
+      </div>
+      <div class="advance-info">
+        <span class="advance-info__label">Parcela atual</span>
+        <span class="advance-info__value">
+          {{ expense().installment!.installmentAmount | number:'1.2-2' }} /parcela
+        </span>
+      </div>
+      <div class="advance-info">
+        <span class="advance-info__label">Parcelas restantes que podem ser adiantadas</span>
+        <span class="advance-info__value advance-info__value--highlight">
+          {{ maxAdvanceable() }}
+        </span>
+      </div>
+
+      <div class="advance-warning">
+        <svg lucideAlertTriangle [size]="16"></svg>
+        <span>
+          As parcelas adiantadas são sempre as <strong>últimas</strong> do parcelamento.
+          Elas não aparecerão mais nos meses futuros.
+        </span>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="adv-quantity">Quantas parcelas adiantar *</label>
+            <input
+              id="adv-quantity"
+              type="number"
+              formControlName="quantity"
+              [min]="1"
+              [max]="maxAdvanceable()"
+              (input)="updatePreview()"
+            />
+            @if (
+              form.get('quantity')?.touched &&
+              form.get('quantity')?.hasError('required')
+            ) {
+              <span class="form-error">Campo obrigatório</span>
+            }
+            @if (form.get('quantity')?.hasError('max')) {
+              <span class="form-error">Máximo: {{ maxAdvanceable() }} parcelas</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="adv-amount">Valor acordado (R$) *</label>
+            <input
+              id="adv-amount"
+              type="number"
+              formControlName="amountPaid"
+              step="0.01"
+              min="0.01"
+              placeholder="0,00"
+              (input)="updatePreview()"
+            />
+            @if (
+              form.get('amountPaid')?.touched &&
+              form.get('amountPaid')?.hasError('required')
+            ) {
+              <span class="form-error">Valor é obrigatório</span>
+            }
+          </div>
+        </div>
+
+        @if (showPreview()) {
+          <div class="advance-preview">
+            <div class="advance-preview__row">
+              <span>Valor original (sem desconto)</span>
+              <span>{{ formattedOriginalTotal() }}</span>
+            </div>
+            <div class="advance-preview__row">
+              <span>Valor acordado</span>
+              <span>{{ formattedAmountPaid() }}</span>
+            </div>
+            <div class="advance-preview__row advance-preview__row--discount">
+              <span>Desconto obtido</span>
+              <span>{{ formattedDiscount() }}</span>
+            </div>
+          </div>
+        }
+
+        <div class="modal__footer">
+          <button
+            type="button"
+            class="btn btn--secondary"
+            (click)="close.emit()"
+          >
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn--primary">
+            Confirmar Adiantamento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

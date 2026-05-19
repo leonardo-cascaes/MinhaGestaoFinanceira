@@ -1,0 +1,12 @@
+<header class="header">
+  <div class="header__left">
+    <button class="header__menu-btn" (click)="toggleSidebar.emit()">
+      <svg lucideMenu [size]="22"></svg>
+    </button>
+    <h1 class="header__title">Minha Gestão Financeira</h1>
+  </div>
+
+  <div class="header__right">
+    <app-month-selector />
+  </div>
+</header>

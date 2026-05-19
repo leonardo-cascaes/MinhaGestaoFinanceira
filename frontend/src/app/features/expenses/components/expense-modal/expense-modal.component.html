@@ -1,0 +1,261 @@
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal">
+    <div class="modal__header">
+      <h3>{{ isEditMode() ? 'Editar Despesa' : 'Nova Despesa' }}</h3>
+      <button class="modal__close" type="button" (click)="close.emit()">
+        <svg lucideX [size]="20"></svg>
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modal__body">
+      <!-- Descrição -->
+      <div class="form-group">
+        <label for="exp-description">Descrição *</label>
+        <input
+          id="exp-description"
+          type="text"
+          formControlName="description"
+          placeholder="Ex: Supermercado, Netflix..."
+        />
+        @if (
+          form.get('description')?.touched &&
+          form.get('description')?.hasError('required')
+        ) {
+          <span class="form-error">Descrição é obrigatória</span>
+        }
+      </div>
+
+      <!-- Tipo + Categoria -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="exp-type">Tipo *</label>
+          <select id="exp-type" formControlName="type">
+            @for (t of expenseTypes; track t.value) {
+              <option [value]="t.value">{{ t.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="exp-category">Categoria *</label>
+          <select id="exp-category" formControlName="category">
+            @for (c of categories; track c.value) {
+              <option [value]="c.value">{{ c.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Valor + Método de pagamento (para avulsa e assinatura) -->
+      @if (selectedType !== ExpenseType.INSTALLMENT) {
+        <div class="form-row">
+          <div class="form-group">
+            <label for="exp-amount">Valor (R$) *</label>
+            <input
+              id="exp-amount"
+              type="number"
+              formControlName="amount"
+              step="0.01"
+              min="0.01"
+              placeholder="0,00"
+            />
+            @if (
+              form.get('amount')?.touched &&
+              form.get('amount')?.hasError('required')
+            ) {
+              <span class="form-error">Valor é obrigatório</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="exp-payment">Método de Pagamento *</label>
+            <select id="exp-payment" formControlName="paymentMethod">
+              @for (pm of paymentMethods; track pm.value) {
+                <option [value]="pm.value">{{ pm.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      }
+
+      <!-- ─── Campos de Assinatura ─── -->
+      @if (selectedType === ExpenseType.SUBSCRIPTION) {
+        <div class="form-section">
+          <h4 class="form-section__title">Dados da Assinatura</h4>
+
+          <div class="form-group form-group--toggle">
+            <label class="toggle-label">
+              <input type="checkbox" formControlName="subIsFixed" />
+              <span class="toggle-switch"></span>
+              Assinatura Fixa (sem data de fim)
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sub-start-month">Mês Início</label>
+              <select id="sub-start-month" formControlName="subStartMonth">
+                <option [value]="1">Janeiro</option>
+                <option [value]="2">Fevereiro</option>
+                <option [value]="3">Março</option>
+                <option [value]="4">Abril</option>
+                <option [value]="5">Maio</option>
+                <option [value]="6">Junho</option>
+                <option [value]="7">Julho</option>
+                <option [value]="8">Agosto</option>
+                <option [value]="9">Setembro</option>
+                <option [value]="10">Outubro</option>
+                <option [value]="11">Novembro</option>
+                <option [value]="12">Dezembro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sub-start-year">Ano Início</label>
+              <input
+                id="sub-start-year"
+                type="number"
+                formControlName="subStartYear"
+                min="2000"
+              />
+            </div>
+          </div>
+
+          @if (!isFixed) {
+            <div class="form-row">
+              <div class="form-group">
+                <label for="sub-end-month">Mês Fim</label>
+                <select id="sub-end-month" formControlName="subEndMonth">
+                  <option [value]="1">Janeiro</option>
+                  <option [value]="2">Fevereiro</option>
+                  <option [value]="3">Março</option>
+                  <option [value]="4">Abril</option>
+                  <option [value]="5">Maio</option>
+                  <option [value]="6">Junho</option>
+                  <option [value]="7">Julho</option>
+                  <option [value]="8">Agosto</option>
+                  <option [value]="9">Setembro</option>
+                  <option [value]="10">Outubro</option>
+                  <option [value]="11">Novembro</option>
+                  <option [value]="12">Dezembro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sub-end-year">Ano Fim</label>
+                <input
+                  id="sub-end-year"
+                  type="number"
+                  formControlName="subEndYear"
+                  min="2000"
+                />
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ─── Campos de Parcelamento ─── -->
+      @if (selectedType === ExpenseType.INSTALLMENT) {
+        <div class="form-section">
+          <h4 class="form-section__title">Dados do Parcelamento</h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inst-total-amount">Valor Total (R$) *</label>
+              <input
+                id="inst-total-amount"
+                type="number"
+                formControlName="instTotalAmount"
+                step="0.01"
+                min="0.01"
+                placeholder="0,00"
+              />
+              @if (
+                form.get('instTotalAmount')?.touched &&
+                form.get('instTotalAmount')?.hasError('required')
+              ) {
+                <span class="form-error">Valor total é obrigatório</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="inst-total-installments">Nº de Parcelas *</label>
+              <input
+                id="inst-total-installments"
+                type="number"
+                formControlName="instTotalInstallments"
+                min="2"
+                max="120"
+              />
+              @if (
+                form.get('instTotalInstallments')?.touched &&
+                form.get('instTotalInstallments')?.hasError('required')
+              ) {
+                <span class="form-error">Número de parcelas é obrigatório</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inst-start-month">Mês Início</label>
+              <select id="inst-start-month" formControlName="instStartMonth">
+                <option [value]="1">Janeiro</option>
+                <option [value]="2">Fevereiro</option>
+                <option [value]="3">Março</option>
+                <option [value]="4">Abril</option>
+                <option [value]="5">Maio</option>
+                <option [value]="6">Junho</option>
+                <option [value]="7">Julho</option>
+                <option [value]="8">Agosto</option>
+                <option [value]="9">Setembro</option>
+                <option [value]="10">Outubro</option>
+                <option [value]="11">Novembro</option>
+                <option [value]="12">Dezembro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inst-start-year">Ano Início</label>
+              <input
+                id="inst-start-year"
+                type="number"
+                formControlName="instStartYear"
+                min="2000"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inst-payment-method">Método de Pagamento</label>
+            <select id="inst-payment-method" formControlName="instPaymentMethod">
+              @for (pm of installmentPaymentMethods; track pm.value) {
+                <option [value]="pm.value">{{ pm.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      }
+
+      <!-- Observações -->
+      <div class="form-group">
+        <label for="exp-notes">Observações</label>
+        <textarea
+          id="exp-notes"
+          formControlName="notes"
+          rows="3"
+          placeholder="Observações opcionais..."
+        ></textarea>
+      </div>
+
+      <div class="modal__footer">
+        <button
+          type="button"
+          class="btn btn--secondary"
+          (click)="close.emit()"
+        >
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn--primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

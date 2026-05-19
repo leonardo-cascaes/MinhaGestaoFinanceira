@@ -1,0 +1,65 @@
+<div class="month-selector">
+  <button
+    class="month-selector__arrow"
+    (click)="previousMonth()"
+    aria-label="Mês anterior"
+  >
+    <svg lucideChevronLeft [size]="18"></svg>
+  </button>
+
+  <div class="month-selector__dropdown-wrapper">
+    <button class="month-selector__label" (click)="toggleDropdown()">
+      <span class="month-selector__label-text" [@monthChange]="monthLabel()">
+        {{ monthLabel() }}
+      </span>
+      <svg
+        lucideChevronDown
+        [size]="14"
+        class="month-selector__chevron"
+        [class.month-selector__chevron--open]="dropdownOpen()"
+      ></svg>
+    </button>
+
+    @if (dropdownOpen()) {
+      <div class="month-selector__dropdown" @dropdownAnimation>
+        <div class="month-selector__dropdown-header">
+          <button
+            class="month-selector__year-arrow"
+            (click)="previousYear(); $event.stopPropagation()"
+            aria-label="Ano anterior"
+          >
+            <svg lucideChevronLeft [size]="16"></svg>
+          </button>
+          <span class="month-selector__year">{{ dropdownYear() }}</span>
+          <button
+            class="month-selector__year-arrow"
+            (click)="nextYear(); $event.stopPropagation()"
+            aria-label="Próximo ano"
+          >
+            <svg lucideChevronRight [size]="16"></svg>
+          </button>
+        </div>
+
+        <div class="month-selector__grid">
+          @for (mes of meses; track mes; let i = $index) {
+            <button
+              class="month-selector__month-btn"
+              [class.month-selector__month-btn--active]="isCurrentSelection(i)"
+              (click)="selectMonth(i + 1); $event.stopPropagation()"
+            >
+              {{ mes.substring(0, 3) }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <button
+    class="month-selector__arrow"
+    (click)="nextMonth()"
+    aria-label="Próximo mês"
+  >
+    <svg lucideChevronRight [size]="18"></svg>
+  </button>
+</div>

@@ -1,0 +1,146 @@
+.income-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+    color: #fff;
+
+    &--salary {
+      background: #2563eb;
+    }
+    &--freelance {
+      background: #7c3aed;
+    }
+    &--investment {
+      background: #059669;
+    }
+    &--rental {
+      background: #d97706;
+    }
+    &--bonus {
+      background: #ec4899;
+    }
+    &--other {
+      background: #64748b;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__description {
+    display: block;
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+    font-size: 0.75rem;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 500;
+
+    &--salary {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    &--freelance {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+    &--investment {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    &--rental {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    &--bonus {
+      background: #fce7f3;
+      color: #9d174d;
+    }
+    &--other {
+      background: #f1f5f9;
+      color: #475569;
+    }
+  }
+
+  &__recurring {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: var(--color-text-muted);
+  }
+
+  &__date {
+    color: var(--color-text-muted);
+  }
+
+  &__amount {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-success);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    &--danger:hover {
+      background: #fef2f2;
+      color: var(--color-danger);
+    }
+  }
+}

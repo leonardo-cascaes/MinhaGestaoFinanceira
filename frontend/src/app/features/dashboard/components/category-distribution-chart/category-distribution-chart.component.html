@@ -1,0 +1,26 @@
+<div class="chart-card">
+  <h3 class="chart-title">Despesas por Categoria</h3>
+  <p class="chart-subtitle">Distribuição do mês</p>
+
+  <div class="chart-container">
+    @if (data().length > 0) {
+      <ngx-charts-pie-chart
+        [results]="data()"
+        [doughnut]="true"
+        [arcWidth]="0.4"
+        [scheme]="colorScheme"
+        [legend]="true"
+        [legendTitle]="''"
+        [legendPosition]="legendBelow"
+        [labels]="true"
+        [labelFormatting]="formatPercent.bind(this)"
+        [tooltipDisabled]="false"
+        [animations]="true">
+      </ngx-charts-pie-chart>
+    } @else {
+      <div class="empty-state">
+        <p>Nenhuma despesa registrada neste mês.</p>
+      </div>
+    }
+  </div>
+</div>

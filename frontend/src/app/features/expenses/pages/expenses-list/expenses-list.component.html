@@ -1,0 +1,123 @@
+<div class="expenses-page">
+  <div class="expenses-page__header">
+    <div>
+      <h2>Despesas</h2>
+      <p class="expenses-page__subtitle">Gerencie suas despesas mensais</p>
+    </div>
+    <button class="btn btn--primary" (click)="openCreateModal()">
+      <svg lucidePlus [size]="18"></svg>
+      Nova Despesa
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="expenses-page__summary">
+    <div class="summary-card summary-card--expenses">
+      <div class="summary-card__icon">
+        <svg lucideTrendingDown [size]="20"></svg>
+      </div>
+      <div class="summary-card__content">
+        <span class="summary-card__label">Total de Despesas</span>
+        <span class="summary-card__value">{{ totalExpenses() }}</span>
+      </div>
+    </div>
+    <div
+      class="summary-card"
+      [class.summary-card--positive]="balanceIsPositive()"
+      [class.summary-card--negative]="!balanceIsPositive()"
+    >
+      <div class="summary-card__icon">
+        <svg lucideWallet [size]="20"></svg>
+      </div>
+      <div class="summary-card__content">
+        <span class="summary-card__label">Saldo do Mês</span>
+        <span class="summary-card__value">{{ balanceValue() }}</span>
+      </div>
+    </div>
+  </div>
+
+  @if (expenses().length > 0) {
+    <!-- Despesas Avulsas -->
+    @if (singleExpenses().length > 0) {
+      <section class="expenses-section">
+        <h3 class="expenses-section__title">Despesas Avulsas</h3>
+        <div class="expenses-section__list">
+          @for (expense of singleExpenses(); track expense.id) {
+            <app-expense-card
+              [expense]="expense"
+              [currentMonth]="currentMonth()"
+              [currentYear]="currentYear()"
+              (edit)="openEditModal($event)"
+              (remove)="onDelete($event)"
+              (advance)="openAdvanceModal($event)"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Assinaturas -->
+    @if (subscriptionExpenses().length > 0) {
+      <section class="expenses-section">
+        <h3 class="expenses-section__title">Assinaturas</h3>
+        <div class="expenses-section__list">
+          @for (expense of subscriptionExpenses(); track expense.id) {
+            <app-expense-card
+              [expense]="expense"
+              [currentMonth]="currentMonth()"
+              [currentYear]="currentYear()"
+              (edit)="openEditModal($event)"
+              (remove)="onDelete($event)"
+              (advance)="openAdvanceModal($event)"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Parcelamentos -->
+    @if (installmentExpenses().length > 0) {
+      <section class="expenses-section">
+        <h3 class="expenses-section__title">Parcelamentos</h3>
+        <div class="expenses-section__list">
+          @for (expense of installmentExpenses(); track expense.id) {
+            <app-expense-card
+              [expense]="expense"
+              [currentMonth]="currentMonth()"
+              [currentYear]="currentYear()"
+              (edit)="openEditModal($event)"
+              (remove)="onDelete($event)"
+              (advance)="openAdvanceModal($event)"
+            />
+          }
+        </div>
+      </section>
+    }
+  } @else {
+    <div class="expenses-page__empty">
+      <svg lucideInbox [size]="48"></svg>
+      <h3>Nenhuma despesa neste mês</h3>
+      <p>Adicione sua primeira despesa clicando no botão acima.</p>
+    </div>
+  }
+</div>
+
+@if (showModal()) {
+  <app-expense-modal
+    [expense]="editingExpense()"
+    [currentMonth]="currentMonth()"
+    [currentYear]="currentYear()"
+    (save)="onSave($event)"
+    (close)="closeModal()"
+  />
+}
+
+@if (advancingExpense()) {
+  <app-advance-modal
+    [expense]="advancingExpense()!"
+    [currentMonth]="currentMonth()"
+    [currentYear]="currentYear()"
+    (confirm)="onAdvanceConfirm($event)"
+    (close)="closeAdvanceModal()"
+  />
+}

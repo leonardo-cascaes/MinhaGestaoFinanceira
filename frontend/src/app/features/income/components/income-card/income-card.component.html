@@ -1,0 +1,65 @@
+<div class="income-card">
+  <div
+    class="income-card__icon"
+    [class]="'income-card__icon income-card__icon--' + typeConfig().cssClass"
+  >
+    @switch (income().type) {
+      @case (IncomeType.SALARY) {
+        <svg lucideBriefcase [size]="20"></svg>
+      }
+      @case (IncomeType.FREELANCE) {
+        <svg lucideLaptop [size]="20"></svg>
+      }
+      @case (IncomeType.INVESTMENT) {
+        <svg lucideTrendingUp [size]="20"></svg>
+      }
+      @case (IncomeType.RENTAL) {
+        <svg lucideHome [size]="20"></svg>
+      }
+      @case (IncomeType.BONUS) {
+        <svg lucideGift [size]="20"></svg>
+      }
+      @case (IncomeType.OTHER) {
+        <svg lucideCircleDollarSign [size]="20"></svg>
+      }
+    }
+  </div>
+
+  <div class="income-card__info">
+    <span class="income-card__description">{{ income().description }}</span>
+    <div class="income-card__meta">
+      <span
+        class="income-card__badge"
+        [class]="'income-card__badge income-card__badge--' + typeConfig().cssClass"
+      >
+        {{ typeConfig().label }}
+      </span>
+      @if (income().recurring) {
+        <span class="income-card__recurring">
+          <svg lucideRepeat [size]="12"></svg>
+          Recorrente
+        </span>
+      }
+      <span class="income-card__date">{{ formattedDate() }}</span>
+    </div>
+  </div>
+
+  <div class="income-card__amount">{{ formattedAmount() }}</div>
+
+  <div class="income-card__actions">
+    <button
+      class="income-card__action"
+      title="Editar"
+      (click)="edit.emit(income())"
+    >
+      <svg lucidePencil [size]="16"></svg>
+    </button>
+    <button
+      class="income-card__action income-card__action--danger"
+      title="Excluir"
+      (click)="remove.emit(income())"
+    >
+      <svg lucideTrash2 [size]="16"></svg>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="chart-card">
+  <h3 class="chart-title">Receitas vs Despesas</h3>
+  <p class="chart-subtitle">Últimos 6 meses</p>
+
+  <div class="chart-container">
+    <ngx-charts-bar-vertical-2d
+      [results]="data()"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="false"
+      [showYAxisLabel]="false"
+      [legend]="true"
+      [legendTitle]="''"
+      [legendPosition]="legendBelow"
+      [scheme]="colorScheme"
+      [groupPadding]="8"
+      [barPadding]="4"
+      [roundEdges]="true"
+      [yAxisTickFormatting]="formatCurrency"
+      [animations]="true">
+    </ngx-charts-bar-vertical-2d>
+  </div>
+</div>

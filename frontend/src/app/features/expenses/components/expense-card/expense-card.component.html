@@ -1,0 +1,93 @@
+<div class="expense-card">
+  <div
+    class="expense-card__icon"
+    [class]="'expense-card__icon expense-card__icon--' + categoryConfig().cssClass"
+  >
+    @switch (expense().category) {
+      @case (ExpenseCategory.FOOD) {
+        <svg lucideUtensils [size]="20"></svg>
+      }
+      @case (ExpenseCategory.TRANSPORT) {
+        <svg lucideCar [size]="20"></svg>
+      }
+      @case (ExpenseCategory.HOUSING) {
+        <svg lucideHome [size]="20"></svg>
+      }
+      @case (ExpenseCategory.HEALTH) {
+        <svg lucideHeart [size]="20"></svg>
+      }
+      @case (ExpenseCategory.EDUCATION) {
+        <svg lucideGraduationCap [size]="20"></svg>
+      }
+      @case (ExpenseCategory.ENTERTAINMENT) {
+        <svg lucideGamepad2 [size]="20"></svg>
+      }
+      @case (ExpenseCategory.SUBSCRIPTION) {
+        <svg lucideRepeat [size]="20"></svg>
+      }
+      @case (ExpenseCategory.SHOPPING) {
+        <svg lucideShoppingBag [size]="20"></svg>
+      }
+      @case (ExpenseCategory.OTHER) {
+        <svg lucideCircleDollarSign [size]="20"></svg>
+      }
+    }
+  </div>
+
+  <div class="expense-card__body">
+    <div class="expense-card__top">
+      <div class="expense-card__info">
+        <span class="expense-card__description">{{ expense().description }}</span>
+        <div class="expense-card__meta">
+          <span
+            class="expense-card__badge"
+            [class]="'expense-card__badge expense-card__badge--' + categoryConfig().cssClass"
+          >
+            {{ categoryConfig().label }}
+          </span>
+          @if (expense().type === ExpenseType.SUBSCRIPTION && expense().subscription) {
+            <app-subscription-badge [subscription]="expense().subscription!" />
+          }
+          <span class="expense-card__payment">{{ paymentLabel() }}</span>
+          <span class="expense-card__date">{{ formattedDate() }}</span>
+        </div>
+      </div>
+
+      <div class="expense-card__amount">{{ formattedAmount() }}</div>
+
+      <div class="expense-card__actions">
+        @if (canAdvance()) {
+          <button
+            class="expense-card__action expense-card__action--advance"
+            title="Adiantar Parcelas"
+            (click)="advance.emit(expense())"
+          >
+            <svg lucideFastForward [size]="16"></svg>
+          </button>
+        }
+        <button
+          class="expense-card__action"
+          title="Editar"
+          (click)="edit.emit(expense())"
+        >
+          <svg lucidePencil [size]="16"></svg>
+        </button>
+        <button
+          class="expense-card__action expense-card__action--danger"
+          title="Excluir"
+          (click)="remove.emit(expense())"
+        >
+          <svg lucideTrash2 [size]="16"></svg>
+        </button>
+      </div>
+    </div>
+
+    @if (expense().type === ExpenseType.INSTALLMENT && expense().installment) {
+      <app-installment-progress
+        [installment]="expense().installment!"
+        [month]="currentMonth()"
+        [year]="currentYear()"
+      />
+    }
+  </div>
+</div>

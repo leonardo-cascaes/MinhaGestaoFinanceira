@@ -1,0 +1,25 @@
+@if (balance$ | async; as balance) {
+  <section class="dashboard">
+    <app-summary-cards [balance]="balance" />
+
+    <div class="charts-row">
+      @if (incomeVsExpense$ | async; as incomeVsExpense) {
+        <div class="chart-col">
+          <app-income-vs-expense-chart [data]="incomeVsExpense" />
+        </div>
+      }
+
+      @if (categoryDistribution$ | async; as categoryData) {
+        <div class="chart-col">
+          <app-category-distribution-chart [data]="categoryData" />
+        </div>
+      }
+    </div>
+
+    @if (monthlyEvolution$ | async; as evolution) {
+      <div class="chart-full">
+        <app-monthly-evolution-chart [data]="evolution" />
+      </div>
+    }
+  </section>
+}

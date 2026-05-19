@@ -1,0 +1,185 @@
+.expense-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+    color: #fff;
+    margin-top: 2px;
+
+    &--food {
+      background: #ea580c;
+    }
+    &--transport {
+      background: #2563eb;
+    }
+    &--housing {
+      background: #7c3aed;
+    }
+    &--health {
+      background: #dc2626;
+    }
+    &--education {
+      background: #0891b2;
+    }
+    &--entertainment {
+      background: #c026d3;
+    }
+    &--subscription {
+      background: #059669;
+    }
+    &--shopping {
+      background: #d97706;
+    }
+    &--other {
+      background: #64748b;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__description {
+    display: block;
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 500;
+
+    &--food {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+    &--transport {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    &--housing {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+    &--health {
+      background: #fef2f2;
+      color: #991b1b;
+    }
+    &--education {
+      background: #ecfeff;
+      color: #155e75;
+    }
+    &--entertainment {
+      background: #fdf4ff;
+      color: #86198f;
+    }
+    &--subscription {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    &--shopping {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    &--other {
+      background: #f1f5f9;
+      color: #475569;
+    }
+  }
+
+  &__payment {
+    color: var(--color-text-muted);
+  }
+
+  &__date {
+    color: var(--color-text-muted);
+  }
+
+  &__amount {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-danger);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    &--danger:hover {
+      background: #fef2f2;
+      color: var(--color-danger);
+    }
+
+    &--advance:hover {
+      background: #eff6ff;
+      color: var(--color-primary);
+    }
+  }
+}
