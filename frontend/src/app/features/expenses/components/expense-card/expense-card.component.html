@@ -53,32 +53,34 @@
         </div>
       </div>
 
-      <div class="expense-card__amount">{{ formattedAmount() }}</div>
+      <div class="expense-card__aside">
+        <div class="expense-card__amount">{{ formattedAmount() }}</div>
 
-      <div class="expense-card__actions">
-        @if (canAdvance()) {
+        <div class="expense-card__actions">
+          @if (canAdvance()) {
+            <button
+              class="expense-card__action expense-card__action--advance"
+              title="Adiantar Parcelas"
+              (click)="advance.emit(expense())"
+            >
+              <svg lucideFastForward [size]="16"></svg>
+            </button>
+          }
           <button
-            class="expense-card__action expense-card__action--advance"
-            title="Adiantar Parcelas"
-            (click)="advance.emit(expense())"
+            class="expense-card__action"
+            title="Editar"
+            (click)="edit.emit(expense())"
           >
-            <svg lucideFastForward [size]="16"></svg>
+            <svg lucidePencil [size]="16"></svg>
           </button>
-        }
-        <button
-          class="expense-card__action"
-          title="Editar"
-          (click)="edit.emit(expense())"
-        >
-          <svg lucidePencil [size]="16"></svg>
-        </button>
-        <button
-          class="expense-card__action expense-card__action--danger"
-          title="Excluir"
-          (click)="remove.emit(expense())"
-        >
-          <svg lucideTrash2 [size]="16"></svg>
-        </button>
+          <button
+            class="expense-card__action expense-card__action--danger"
+            title="Excluir"
+            (click)="remove.emit(expense())"
+          >
+            <svg lucideTrash2 [size]="16"></svg>
+          </button>
+        </div>
       </div>
     </div>
 

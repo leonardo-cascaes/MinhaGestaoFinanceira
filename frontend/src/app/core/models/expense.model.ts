@@ -57,7 +57,9 @@ export interface InstallmentInfo {
   startMonth: number;
   startYear: number;
   paymentMethod: PaymentMethod;
+  /** @deprecated Prefer advancePayments */
   advancePayment?: AdvancePaymentInfo;
+  advancePayments?: AdvancePaymentInfo[];
 }
 
 export interface AdvancePaymentInfo {

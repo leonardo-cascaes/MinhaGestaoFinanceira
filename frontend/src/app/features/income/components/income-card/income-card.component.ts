@@ -1,6 +1,10 @@
 import { Component, computed, input, output } from '@angular/core';
 import { Income, IncomeType } from '@core/models/income.model';
 import {
+  hasRecurrenceEnded,
+  isRecurringActive,
+} from '@core/utils/income-recurrence.util';
+import {
   LucideBriefcase,
   LucideLaptop,
   LucideTrendingUp,
@@ -63,5 +67,14 @@ export class IncomeCardComponent {
   formattedDate = computed(() => {
     const d = this.income().date;
     return dateFmt.format(d instanceof Date ? d : new Date(d));
+  });
+
+  isActiveRecurring = computed(() => isRecurringActive(this.income()));
+
+  recurrenceEndLabel = computed(() => {
+    const inc = this.income();
+    if (!hasRecurrenceEnded(inc)) return '';
+    const m = String(inc.recurringEndMonth).padStart(2, '0');
+    return `Encerrada em ${m}/${inc.recurringEndYear}`;
   });
 }

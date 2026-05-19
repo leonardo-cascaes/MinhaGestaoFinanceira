@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Expense, AdvancePaymentInfo } from '@core/models/expense.model';
+import { remainingAdvanceable } from '@core/utils/installment-advance.util';
 import { LucideX, LucideAlertTriangle } from '@lucide/angular';
 import { DecimalPipe } from '@angular/common';
 
@@ -41,10 +42,7 @@ export class AdvanceModalComponent implements OnInit {
 
   maxAdvanceable = computed(() => {
     const inst = this.expense().installment!;
-    const target = this.currentYear() * 12 + this.currentMonth();
-    const start = inst.startYear * 12 + inst.startMonth;
-    const currentIdx = target - start + 1;
-    return inst.totalInstallments - currentIdx;
+    return remainingAdvanceable(inst, this.currentMonth(), this.currentYear());
   });
 
   originalTotal = computed(() =>

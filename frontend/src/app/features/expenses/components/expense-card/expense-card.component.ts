@@ -21,6 +21,7 @@ import {
 } from '@lucide/angular';
 import { SubscriptionBadgeComponent } from '../subscription-badge/subscription-badge.component';
 import { InstallmentProgressComponent } from '../installment-progress/installment-progress.component';
+import { canAdvanceInstallments } from '@core/utils/installment-advance.util';
 
 const CATEGORY_CONFIG: Record<
   ExpenseCategory,
@@ -107,13 +108,10 @@ export class ExpenseCardComponent {
   canAdvance = computed(() => {
     const exp = this.expense();
     if (exp.type !== ExpenseType.INSTALLMENT || !exp.installment) return false;
-    const inst = exp.installment;
-    const effectiveTotal = inst.advancePayment
-      ? inst.totalInstallments - inst.advancePayment.installmentsAdvanced
-      : inst.totalInstallments;
-    const target = this.currentYear() * 12 + this.currentMonth();
-    const start = inst.startYear * 12 + inst.startMonth;
-    const currentIdx = target - start + 1;
-    return currentIdx < effectiveTotal && !inst.advancePayment;
+    return canAdvanceInstallments(
+      exp.installment,
+      this.currentMonth(),
+      this.currentYear(),
+    );
   });
 }

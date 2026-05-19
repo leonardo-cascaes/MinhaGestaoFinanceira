@@ -62,13 +62,22 @@
 
   &__top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: var(--spacing-md);
   }
 
   &__info {
     flex: 1;
     min-width: 0;
+  }
+
+  &__aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
   }
 
   &__description {
@@ -87,6 +96,7 @@
     margin-top: var(--spacing-xs);
     font-size: 0.75rem;
     flex-wrap: wrap;
+    row-gap: 4px;
   }
 
   &__badge {
@@ -180,6 +190,33 @@
     &--advance:hover {
       background: #eff6ff;
       color: var(--color-primary);
+    }
+  }
+
+  @media (max-width: 640px) {
+    padding: var(--spacing-md);
+
+    &__top {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__aside {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding-top: var(--spacing-xs);
+      border-top: 1px solid var(--color-border);
+    }
+
+    &__amount {
+      font-size: 1rem;
+    }
+
+    &__payment,
+    &__date {
+      white-space: nowrap;
     }
   }
 }

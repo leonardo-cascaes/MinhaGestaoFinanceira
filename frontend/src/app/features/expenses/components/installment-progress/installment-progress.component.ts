@@ -1,5 +1,11 @@
 import { Component, computed, input } from '@angular/core';
 import { InstallmentInfo } from '@core/models/expense.model';
+import {
+  currentInstallmentIndex,
+  effectiveInstallmentTotal,
+  totalAdvanceDiscount,
+  totalInstallmentsAdvanced,
+} from '@core/utils/installment-advance.util';
 
 const currencyFmt = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -20,9 +26,9 @@ const currencyFmt = new Intl.NumberFormat('pt-BR', {
       <div class="inst-progress__bar">
         <div class="inst-progress__fill" [style.width.%]="percent()"></div>
       </div>
-      @if (installment().advancePayment) {
+      @if (advancedCount() > 0) {
         <span class="inst-progress__advance">
-          {{ installment().advancePayment!.installmentsAdvanced }} parcelas adiantadas
+          {{ advancedCount() }} parcela(s) adiantada(s)
           ({{ formattedDiscount() }} de desconto)
         </span>
       }
@@ -80,20 +86,15 @@ export class InstallmentProgressComponent {
   month = input.required<number>();
   year = input.required<number>();
 
-  effectiveTotal = computed(() => {
-    const inst = this.installment();
-    if (inst.advancePayment) {
-      return inst.totalInstallments - inst.advancePayment.installmentsAdvanced;
-    }
-    return inst.totalInstallments;
-  });
+  effectiveTotal = computed(() => effectiveInstallmentTotal(this.installment()));
 
   currentForMonth = computed(() => {
     const inst = this.installment();
-    const target = this.year() * 12 + this.month();
-    const start = inst.startYear * 12 + inst.startMonth;
-    return Math.min(target - start + 1, this.effectiveTotal());
+    const idx = currentInstallmentIndex(inst, this.month(), this.year());
+    return Math.min(Math.max(idx, 1), this.effectiveTotal());
   });
+
+  advancedCount = computed(() => totalInstallmentsAdvanced(this.installment()));
 
   percent = computed(() => {
     const total = this.effectiveTotal();
@@ -103,8 +104,7 @@ export class InstallmentProgressComponent {
 
   percentText = computed(() => `${this.percent()}%`);
 
-  formattedDiscount = computed(() => {
-    const adv = this.installment().advancePayment;
-    return adv ? currencyFmt.format(adv.discount) : '';
-  });
+  formattedDiscount = computed(() =>
+    currencyFmt.format(totalAdvanceDiscount(this.installment())),
+  );
 }

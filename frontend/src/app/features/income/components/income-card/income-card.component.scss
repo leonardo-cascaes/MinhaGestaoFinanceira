@@ -105,6 +105,16 @@
     color: var(--color-text-muted);
   }
 
+  &__ended {
+    display: inline-flex;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    background: #fef3c7;
+    color: #92400e;
+  }
+
   &__date {
     color: var(--color-text-muted);
   }

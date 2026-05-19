@@ -93,3 +93,55 @@ img {
   max-width: 100%;
   display: block;
 }
+
+/* Tooltips dos gráficos (ngx-charts) */
+.ngx-charts-tooltip-content.type-tooltip {
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  .tooltip-caret {
+    display: none;
+  }
+}
+
+.chart-tooltip {
+  padding: 0.625rem 0.875rem;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.28);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  min-width: 8.5rem;
+  text-align: left;
+
+  &__series {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+    margin: 0 0 0.125rem;
+  }
+
+  &__title {
+    font-weight: 500;
+    margin: 0;
+    opacity: 0.9;
+  }
+
+  &__value {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0;
+    color: #fff;
+  }
+
+  &__meta {
+    margin: 0.125rem 0 0;
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+}

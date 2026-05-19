@@ -6,6 +6,7 @@ import { ExpenseCategory } from '@core/models/expense.model';
 import { BalanceService } from './balance.service';
 import { ExpenseService } from './expense.service';
 import { MonthContextService } from './month-context.service';
+import { sanitizeChartNumber } from '@core/utils/chart-format.util';
 
 export interface ChartGroupedData {
   name: string;
@@ -59,8 +60,8 @@ export class DashboardService {
             balances.map((b, i) => ({
               name: `${MONTH_SHORT[periods[i].month - 1]}/${periods[i].year}`,
               series: [
-                { name: 'Receitas', value: b.totalIncome },
-                { name: 'Despesas', value: b.totalExpenses },
+                { name: 'Receitas', value: sanitizeChartNumber(b.totalIncome) },
+                { name: 'Despesas', value: sanitizeChartNumber(b.totalExpenses) },
               ],
             })),
           ),
@@ -78,7 +79,7 @@ export class DashboardService {
               name: 'Saldo',
               series: balances.map((b) => ({
                 name: `${MONTH_SHORT[b.month - 1]}/${b.year}`,
-                value: b.balance,
+                value: sanitizeChartNumber(b.balance),
               })),
             },
           ]),
@@ -102,7 +103,7 @@ export class DashboardService {
             return Array.from(categoryMap.entries())
               .map(([category, value]) => ({
                 name: CATEGORY_LABELS[category],
-                value: Math.round(value * 100) / 100,
+                value: sanitizeChartNumber(Math.round(value * 100) / 100),
               }))
               .sort((a, b) => b.value - a.value);
           }),

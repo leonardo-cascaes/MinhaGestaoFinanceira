@@ -92,7 +92,16 @@
       <div class="form-row">
         <div class="form-group">
           <label for="inc-date">Data *</label>
-          <input id="inc-date" type="date" formControlName="date" />
+          <app-date-input
+            inputId="inc-date"
+            formControlName="date"
+            [invalid]="
+              !!(
+                form.get('date')?.touched &&
+                form.get('date')?.hasError('required')
+              )
+            "
+          />
           @if (
             form.get('date')?.touched &&
             form.get('date')?.hasError('required')
@@ -109,6 +118,36 @@
           </label>
         </div>
       </div>
+
+      @if (showLastRecurrenceField()) {
+        <div class="form-section form-section--end">
+          <p class="form-section__hint">
+            Informe o mês do último recebimento. Meses anteriores continuam no
+            histórico; meses seguintes não exibirão mais esta receita.
+          </p>
+          <div class="form-group">
+            <label for="inc-last-recurrence">
+              Data do último recebimento <span class="required">*</span>
+            </label>
+            <app-date-input
+              inputId="inc-last-recurrence"
+              formControlName="lastRecurrenceDate"
+              [invalid]="
+                !!(
+                  form.get('lastRecurrenceDate')?.touched &&
+                  form.get('lastRecurrenceDate')?.hasError('required')
+                )
+              "
+            />
+            @if (
+              form.get('lastRecurrenceDate')?.touched &&
+              form.get('lastRecurrenceDate')?.hasError('required')
+            ) {
+              <span class="form-error">Data do último recebimento é obrigatória</span>
+            }
+          </div>
+        </div>
+      }
 
       <div class="form-group">
         <label for="inc-notes">Observações</label>

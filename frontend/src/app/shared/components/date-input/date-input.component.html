@@ -1,0 +1,20 @@
+<div
+  class="date-input"
+  [class.date-input--invalid]="invalid()"
+  [class.date-input--disabled]="disabled()">
+  <span class="date-input__icon" aria-hidden="true">
+    <svg lucideCalendar [size]="18"></svg>
+  </span>
+  <span class="date-input__text">{{ displayLabel() }}</span>
+  <input
+    class="date-input__native"
+    type="date"
+    [id]="inputId()"
+    [value]="value()"
+    [disabled]="disabled()"
+    [min]="min() ?? undefined"
+    [max]="max() ?? undefined"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+</div>

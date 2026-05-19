@@ -19,7 +19,7 @@
         </span>
       </div>
       <div class="advance-info">
-        <span class="advance-info__label">Parcelas restantes que podem ser adiantadas</span>
+        <span class="advance-info__label">Parcelas que ainda podem ser adiantadas</span>
         <span class="advance-info__value advance-info__value--highlight">
           {{ maxAdvanceable() }}
         </span>
@@ -36,7 +36,7 @@
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="form-row">
           <div class="form-group">
-            <label for="adv-quantity">Quantas parcelas adiantar *</label>
+            <label for="adv-quantity">Parcelas a adiantar <span class="required">*</span></label>
             <input
               id="adv-quantity"
               type="number"
@@ -57,7 +57,7 @@
           </div>
 
           <div class="form-group">
-            <label for="adv-amount">Valor acordado (R$) *</label>
+            <label for="adv-amount">Valor acordado (R$) <span class="required">*</span></label>
             <input
               id="adv-amount"
               type="number"

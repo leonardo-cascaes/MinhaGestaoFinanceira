@@ -4,20 +4,34 @@
 
   <div class="chart-container">
     <ngx-charts-bar-vertical-2d
-      [results]="data()"
+      [results]="chartData()"
       [xAxis]="true"
       [yAxis]="true"
       [showXAxisLabel]="false"
       [showYAxisLabel]="false"
-      [legend]="true"
-      [legendTitle]="''"
-      [legendPosition]="legendBelow"
+      [legend]="false"
       [scheme]="colorScheme"
       [groupPadding]="8"
       [barPadding]="4"
       [roundEdges]="true"
       [yAxisTickFormatting]="formatCurrency"
-      [animations]="true">
+      [animations]="false">
+      <ng-template #tooltipTemplate let-model="model">
+        @if (hasTooltipValue(model)) {
+          <div class="chart-tooltip">
+            @if (tooltipSeries(model); as series) {
+              <p class="chart-tooltip__series">{{ series }}</p>
+            }
+            <p class="chart-tooltip__title">{{ tooltipCategory(model) }}</p>
+            <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
+          </div>
+        }
+      </ng-template>
     </ngx-charts-bar-vertical-2d>
   </div>
+
+  <app-chart-legend
+    [items]="legendItems"
+    [hidden]="hiddenSeries()"
+    (toggle)="onLegendToggle($event)" />
 </div>

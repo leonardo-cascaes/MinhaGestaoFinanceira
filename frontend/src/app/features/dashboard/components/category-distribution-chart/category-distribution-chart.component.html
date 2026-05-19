@@ -2,25 +2,44 @@
   <h3 class="chart-title">Despesas por Categoria</h3>
   <p class="chart-subtitle">Distribuição do mês</p>
 
-  <div class="chart-container">
-    @if (data().length > 0) {
-      <ngx-charts-pie-chart
-        [results]="data()"
-        [doughnut]="true"
-        [arcWidth]="0.4"
-        [scheme]="colorScheme"
-        [legend]="true"
-        [legendTitle]="''"
-        [legendPosition]="legendBelow"
-        [labels]="true"
-        [labelFormatting]="formatPercent.bind(this)"
-        [tooltipDisabled]="false"
-        [animations]="true">
-      </ngx-charts-pie-chart>
-    } @else {
+  @if (data().length > 0) {
+    <div class="chart-container">
+      @if (chartData().length > 0) {
+        <ngx-charts-pie-chart
+          [results]="chartData()"
+          [doughnut]="true"
+          [arcWidth]="0.4"
+          [scheme]="colorScheme"
+          [legend]="false"
+          [labels]="false"
+          [tooltipDisabled]="false"
+          [animations]="false">
+          <ng-template #tooltipTemplate let-model="model">
+            @if (hasTooltipValue(model)) {
+              <div class="chart-tooltip">
+                <p class="chart-tooltip__title">{{ model.name }}</p>
+                <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
+                <p class="chart-tooltip__meta">{{ tooltipPercent(model) }} do total</p>
+              </div>
+            }
+          </ng-template>
+        </ngx-charts-pie-chart>
+      } @else {
+        <div class="chart-empty-hint">
+          <p>Selecione ao menos uma categoria na legenda para exibir o gráfico.</p>
+        </div>
+      }
+    </div>
+
+    <app-chart-legend
+      [items]="legendItems()"
+      [hidden]="hiddenCategories()"
+      (toggle)="onLegendToggle($event)" />
+  } @else {
+    <div class="chart-container">
       <div class="empty-state">
         <p>Nenhuma despesa registrada neste mês.</p>
       </div>
-    }
-  </div>
+    </div>
+  }
 </div>

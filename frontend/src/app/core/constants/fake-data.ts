@@ -13,29 +13,29 @@ function id(): string {
 // ─── Receitas (Janeiro a Junho 2026) ─────────────────────────────────
 
 export const FAKE_INCOMES: Income[] = [
-  // Salário mensal — R$ 8.500
-  ...([1, 2, 3, 4, 5, 6] as const).map<Income>((m) => ({
+  // Salário mensal recorrente — R$ 8.500 (desde jan/2026)
+  {
     id: id(),
     description: 'Salário',
     type: IncomeType.SALARY,
     amount: 8500,
-    month: m,
+    month: 1,
     year: 2026,
-    date: new Date(2026, m - 1, 5),
+    date: new Date(2026, 0, 5),
     recurring: true,
-  })),
+  },
 
-  // Rendimento de investimento — R$ 350/mês
-  ...([1, 2, 3, 4, 5, 6] as const).map<Income>((m) => ({
+  // Rendimento de investimento recorrente — R$ 350/mês (desde jan/2026)
+  {
     id: id(),
     description: 'Rendimento CDB',
     type: IncomeType.INVESTMENT,
     amount: 350,
-    month: m,
+    month: 1,
     year: 2026,
-    date: new Date(2026, m - 1, 2),
+    date: new Date(2026, 0, 2),
     recurring: true,
-  })),
+  },
 
   // Freelances pontuais
   {

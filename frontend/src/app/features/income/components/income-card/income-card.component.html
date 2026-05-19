@@ -34,11 +34,14 @@
       >
         {{ typeConfig().label }}
       </span>
-      @if (income().recurring) {
+      @if (isActiveRecurring()) {
         <span class="income-card__recurring">
           <svg lucideRepeat [size]="12"></svg>
           Recorrente
         </span>
+      }
+      @if (recurrenceEndLabel()) {
+        <span class="income-card__ended">{{ recurrenceEndLabel() }}</span>
       }
       <span class="income-card__date">{{ formattedDate() }}</span>
     </div>

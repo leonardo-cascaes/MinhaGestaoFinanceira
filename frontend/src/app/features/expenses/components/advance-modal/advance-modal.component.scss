@@ -30,11 +30,12 @@
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  width: 100%;
+  width: calc(100% - 2 * var(--spacing-md));
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
   animation: slideIn 0.2s ease;
+  margin: var(--spacing-md);
 
   &__header {
     display: flex;
@@ -70,6 +71,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
+
+    @media (max-width: 480px) {
+      padding: var(--spacing-lg);
+    }
   }
 
   &__footer {
@@ -79,19 +84,44 @@
     padding-top: var(--spacing-md);
     border-top: 1px solid var(--color-border);
     margin-top: var(--spacing-sm);
+    width: 100%;
+
+    @media (max-width: 480px) {
+      flex-direction: column-reverse;
+
+      .btn {
+        width: 100%;
+      }
+    }
   }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
 }
 
 .advance-info {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
   padding: var(--spacing-sm) 0;
   border-bottom: 1px solid var(--color-border);
+
+  @media (min-width: 400px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   &__label {
     font-size: 0.875rem;
     color: var(--color-text-muted);
+    line-height: 1.35;
+    padding-right: var(--spacing-sm);
   }
 
   &__value {
@@ -154,6 +184,11 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-text);
+    line-height: 1.35;
+
+    .required {
+      color: var(--color-danger);
+    }
   }
 
   input {
@@ -181,11 +216,12 @@
 }
 
 .form-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--spacing-md);
 
-  @media (max-width: 480px) {
-    flex-direction: column;
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
   }
 }
 

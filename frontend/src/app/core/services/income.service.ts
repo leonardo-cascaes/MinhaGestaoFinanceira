@@ -3,6 +3,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Income } from '@core/models/income.model';
 import { FAKE_INCOMES } from '@core/constants/fake-data';
+import {
+  isIncomeVisibleInMonth,
+  projectIncomeForMonth,
+} from '@core/utils/income-recurrence.util';
 
 @Injectable({ providedIn: 'root' })
 export class IncomeService {
@@ -15,7 +19,9 @@ export class IncomeService {
   getByMonth(month: number, year: number): Observable<Income[]> {
     return this.incomes$.pipe(
       map((incomes) =>
-        incomes.filter((i) => i.month === month && i.year === year),
+        incomes
+          .filter((i) => isIncomeVisibleInMonth(i, month, year))
+          .map((i) => projectIncomeForMonth(i, month, year)),
       ),
     );
   }

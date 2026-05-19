@@ -1,0 +1,15 @@
+<ul class="chart-legend" role="list">
+  @for (item of items(); track item.label) {
+    <li class="chart-legend__item">
+      <button
+        type="button"
+        class="chart-legend__btn"
+        [class.chart-legend__btn--hidden]="hidden().has(item.label)"
+        [attr.aria-pressed]="!hidden().has(item.label)"
+        (click)="toggle.emit(item.label)">
+        <span class="chart-legend__swatch" [style.background-color]="item.color"></span>
+        <span class="chart-legend__label">{{ item.label }}</span>
+      </button>
+    </li>
+  }
+</ul>

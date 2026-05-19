@@ -9,6 +9,11 @@ import {
   AdvancePaymentInfo,
 } from '@core/models/expense.model';
 import { FAKE_EXPENSES } from '@core/constants/fake-data';
+import {
+  advanceAmountForMonth,
+  effectiveInstallmentTotal,
+  getAdvancePayments,
+} from '@core/utils/installment-advance.util';
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseService {
@@ -141,11 +146,13 @@ export class ExpenseService {
     const current = this.expenses$.getValue();
     const updated = current.map((item) => {
       if (item.id === id && item.installment) {
+        const payments = [...getAdvancePayments(item.installment), info];
         return {
           ...item,
           installment: {
             ...item.installment,
-            advancePayment: info,
+            advancePayments: payments,
+            advancePayment: undefined,
           },
         };
       }
@@ -206,28 +213,14 @@ export class ExpenseService {
 
     if (installmentIndex < 0) return null;
 
-    let effectiveTotal = inst.totalInstallments;
-    if (inst.advancePayment) {
-      effectiveTotal =
-        inst.totalInstallments - inst.advancePayment.installmentsAdvanced;
+    const effectiveTotal = effectiveInstallmentTotal(inst);
+    const advanceThisMonth = advanceAmountForMonth(inst, month, year);
+
+    if (installmentIndex >= effectiveTotal) {
+      return advanceThisMonth > 0 ? advanceThisMonth : null;
     }
 
-    // Check if this month is the advance payment month
-    if (inst.advancePayment) {
-      const advDate = inst.advancePayment.date;
-      const advMonth = advDate.getMonth() + 1;
-      const advYear = advDate.getFullYear();
-      if (month === advMonth && year === advYear) {
-        // If regular installment still falls in this month, include both
-        if (installmentIndex >= 0 && installmentIndex < effectiveTotal) {
-          return inst.installmentAmount + inst.advancePayment.amountPaid;
-        }
-        return inst.advancePayment.amountPaid;
-      }
-    }
-
-    if (installmentIndex >= effectiveTotal) return null;
-
-    return inst.installmentAmount;
+    const regular = inst.installmentAmount;
+    return advanceThisMonth > 0 ? regular + advanceThisMonth : regular;
   }
 }

@@ -98,6 +98,11 @@
     color: var(--color-text);
   }
 
+  app-date-input {
+    display: block;
+    width: 100%;
+  }
+
   input,
   select,
   textarea {
@@ -190,6 +195,29 @@ input[type='checkbox']:checked + .toggle-switch {
   &::after {
     transform: translateX(16px);
   }
+}
+
+.form-section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg);
+
+  &--end {
+    border-color: #fde68a;
+    background: #fffbeb;
+  }
+
+  &__hint {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+.required {
+  color: var(--color-danger);
 }
 
 .btn {
