@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MGF.Api/MGF.Api.csproj" />
+    <Project Path="src/MGF.Application/MGF.Application.csproj" />
+    <Project Path="src/MGF.Infrastructure/MGF.Infrastructure.csproj" />
+  </Folder>
+</Solution>
