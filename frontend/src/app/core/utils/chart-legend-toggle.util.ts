@@ -28,6 +28,7 @@ export function applyHiddenToGroupedSeries(
   }));
 }
 
+/** Remove itens ocultos (barras agrupadas). */
 export function applyHiddenToSingleSeries(
   data: ChartSingleData[],
   hidden: Set<string>,
@@ -40,4 +41,18 @@ export function applyHiddenToSingleSeries(
     return sanitized;
   }
   return sanitized.filter((d) => !hidden.has(d.name));
+}
+
+/**
+ * Mantém todas as categorias no array; ocultas ficam com valor 0.
+ * O pie chart anima ângulos no lugar ao mostrar/ocultar (sem “buraco” vazio).
+ */
+export function applyHiddenToSingleSeriesInPlace(
+  data: ChartSingleData[],
+  hidden: Set<string>,
+): ChartSingleData[] {
+  return data.map((d) => ({
+    ...d,
+    value: hidden.has(d.name) ? 0 : sanitizeChartNumber(d.value),
+  }));
 }

@@ -40,3 +40,21 @@ export function chartTooltipSeries(model: ChartTooltipModel): string | null {
 export function chartTooltipCategory(model: ChartTooltipModel): string {
   return (model.name ?? model.label ?? '').trim();
 }
+
+/** Linha do tooltip vertical (ngx-charts seriesTooltipTemplate). */
+export interface SeriesTooltipRow {
+  name: string;
+  value: number;
+  series?: string;
+  color?: string;
+}
+
+export function seriesTooltipMonth(rows: SeriesTooltipRow[] | null | undefined): string {
+  return rows?.[0]?.name?.trim() ?? '';
+}
+
+export function seriesTooltipRows(
+  rows: SeriesTooltipRow[] | null | undefined,
+): SeriesTooltipRow[] {
+  return rows ?? [];
+}

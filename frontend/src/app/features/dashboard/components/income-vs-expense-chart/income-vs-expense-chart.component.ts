@@ -1,4 +1,11 @@
-import { Component, computed, effect, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  signal,
+} from '@angular/core';
 import {
   NgxChartsModule,
   Color,
@@ -17,13 +24,16 @@ import {
   ChartLegendComponent,
   ChartLegendItem,
 } from '@shared/components/chart-legend/chart-legend.component';
+import { INCOME_EXPENSE_CUSTOM_COLORS } from '@core/utils/chart-color.util';
+import { ChartTouchTooltipsDirective } from '@shared/directives/chart-touch-tooltips.directive';
 
 @Component({
   selector: 'app-income-vs-expense-chart',
   standalone: true,
-  imports: [NgxChartsModule, ChartLegendComponent],
+  imports: [NgxChartsModule, ChartLegendComponent, ChartTouchTooltipsDirective],
   templateUrl: './income-vs-expense-chart.component.html',
   styleUrl: './income-vs-expense-chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeVsExpenseChartComponent {
   data = input.required<ChartGroupedData[]>();
@@ -33,6 +43,8 @@ export class IncomeVsExpenseChartComponent {
   readonly chartData = computed(() =>
     applyHiddenToGroupedSeries(this.data(), this.hiddenSeries()),
   );
+
+  readonly customColors = INCOME_EXPENSE_CUSTOM_COLORS;
 
   readonly legendItems: ChartLegendItem[] = [
     { label: 'Receitas', color: '#10b981' },

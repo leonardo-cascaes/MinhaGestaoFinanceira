@@ -3,25 +3,24 @@
   <p class="chart-subtitle">Distribuição do mês</p>
 
   @if (data().length > 0) {
-    <div class="chart-container">
-      @if (chartData().length > 0) {
+    <div class="chart-container" data-chart-tooltips>
+      @if (hasVisibleSlices()) {
         <ngx-charts-pie-chart
           [results]="chartData()"
           [doughnut]="true"
           [arcWidth]="0.4"
-          [scheme]="colorScheme"
+          [scheme]="colorScheme()"
+          [customColors]="customColors()"
           [legend]="false"
           [labels]="false"
           [tooltipDisabled]="false"
-          [animations]="false">
+          [animations]="true">
           <ng-template #tooltipTemplate let-model="model">
-            @if (hasTooltipValue(model)) {
-              <div class="chart-tooltip">
-                <p class="chart-tooltip__title">{{ model.name }}</p>
-                <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
-                <p class="chart-tooltip__meta">{{ tooltipPercent(model) }} do total</p>
-              </div>
-            }
+            <div class="chart-tooltip">
+              <p class="chart-tooltip__title">{{ model.name }}</p>
+              <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
+              <p class="chart-tooltip__meta">{{ tooltipPercent(model) }} do total</p>
+            </div>
           </ng-template>
         </ngx-charts-pie-chart>
       } @else {
@@ -36,7 +35,7 @@
       [hidden]="hiddenCategories()"
       (toggle)="onLegendToggle($event)" />
   } @else {
-    <div class="chart-container">
+    <div class="chart-container" data-chart-tooltips>
       <div class="empty-state">
         <p>Nenhuma despesa registrada neste mês.</p>
       </div>

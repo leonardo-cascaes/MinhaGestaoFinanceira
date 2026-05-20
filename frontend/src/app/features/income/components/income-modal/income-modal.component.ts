@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -8,6 +9,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
@@ -16,7 +18,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { Income, IncomeType } from '@core/models/income.model';
-import { hasRecurrenceEnded } from '@core/utils/income-recurrence.util';
+import {
+  hasRecurrenceEnded,
+  isRecurringTemplate,
+} from '@core/utils/income-recurrence.util';
 import { LucideX } from '@lucide/angular';
 import { DateInputComponent } from '@shared/components/date-input/date-input.component';
 
@@ -26,6 +31,7 @@ import { DateInputComponent } from '@shared/components/date-input/date-input.com
   imports: [ReactiveFormsModule, LucideX, DateInputComponent],
   templateUrl: './income-modal.component.html',
   styleUrl: './income-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeModalComponent implements OnInit {
   income = input<Income | null>(null);
@@ -48,6 +54,7 @@ export class IncomeModalComponent implements OnInit {
   ];
 
   isEditMode = computed(() => !!this.income());
+  isRecurringChecked = signal(false);
 
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
@@ -58,6 +65,9 @@ export class IncomeModalComponent implements OnInit {
     this.wasRecurringTemplate =
       !!inc?.recurring || (inc != null && hasRecurrenceEnded(inc));
 
+    const startDate = inc?.recurringStartDate ?? inc?.date;
+    const defaultDate = this.toDateInput(startDate);
+
     const defaultLastRecurrence = inc?.recurringEndMonth
       ? this.toDateInput(
           new Date(inc.recurringEndYear!, inc.recurringEndMonth! - 1, 1),
@@ -65,6 +75,8 @@ export class IncomeModalComponent implements OnInit {
       : this.toDateInput(
           new Date(this.currentYear(), this.currentMonth() - 1, 1),
         );
+
+    const initialRecurring = inc?.recurring ?? false;
 
     this.form = this.fb.group({
       description: [inc?.description ?? '', Validators.required],
@@ -81,21 +93,48 @@ export class IncomeModalComponent implements OnInit {
         inc?.year ?? this.currentYear(),
         [Validators.required, Validators.min(2000)],
       ],
-      date: [this.toDateInput(inc?.date), Validators.required],
-      recurring: [inc?.recurring ?? false],
+      date: [defaultDate, Validators.required],
+      recurring: [initialRecurring],
       lastRecurrenceDate: [defaultLastRecurrence],
       notes: [inc?.notes ?? ''],
     });
 
+    this.isRecurringChecked.set(initialRecurring);
     this.updateLastRecurrenceFieldVisibility();
     this.updateLastRecurrenceValidators();
 
     this.form
       .get('recurring')!
       .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
+      .subscribe((recurring: boolean) => {
+        this.isRecurringChecked.set(!!recurring);
         this.updateLastRecurrenceFieldVisibility();
         this.updateLastRecurrenceValidators();
+      });
+
+    this.form
+      .get('date')!
+      .valueChanges.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        filter((dateStr: string) => /^\d{4}-\d{2}-\d{2}$/.test(dateStr)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((dateStr: string) => {
+        if (!this.isRecurringChecked()) {
+          return;
+        }
+        const parsed = new Date(`${dateStr}T12:00:00`);
+        if (Number.isNaN(parsed.getTime())) {
+          return;
+        }
+        this.form.patchValue(
+          {
+            month: parsed.getMonth() + 1,
+            year: parsed.getFullYear(),
+          },
+          { emitEvent: false },
+        );
       });
   }
 
@@ -106,8 +145,11 @@ export class IncomeModalComponent implements OnInit {
     }
 
     const v = this.form.getRawValue();
+    const original = this.income();
+    const template = original && isRecurringTemplate(original);
+
     const base: Omit<Income, 'id'> & { id?: string } = {
-      ...(this.income()?.id ? { id: this.income()!.id } : {}),
+      ...(original?.id ? { id: original.id } : {}),
       description: v.description,
       type: v.type,
       amount: +v.amount,
@@ -118,14 +160,28 @@ export class IncomeModalComponent implements OnInit {
       notes: v.notes || undefined,
     };
 
-    if (v.recurring) {
-      base.recurringEndMonth = undefined;
-      base.recurringEndYear = undefined;
-    } else if (this.showLastRecurrenceField()) {
-      const last = new Date(v.lastRecurrenceDate + 'T12:00:00');
-      base.recurringEndMonth = last.getMonth() + 1;
-      base.recurringEndYear = last.getFullYear();
+    if (template && original) {
+      if (v.recurring) {
+        base.month = +v.month;
+        base.year = +v.year;
+        base.date = new Date(v.date + 'T12:00:00');
+        base.recurringEndMonth = undefined;
+        base.recurringEndYear = undefined;
+      } else {
+        base.month = original.month;
+        base.year = original.year;
+        base.date =
+          original.date instanceof Date
+            ? original.date
+            : new Date(original.date);
+        const last = new Date(v.lastRecurrenceDate + 'T12:00:00');
+        base.recurringEndMonth = last.getMonth() + 1;
+        base.recurringEndYear = last.getFullYear();
+      }
     } else {
+      base.month = +v.month;
+      base.year = +v.year;
+      base.date = new Date(v.date + 'T12:00:00');
       base.recurringEndMonth = undefined;
       base.recurringEndYear = undefined;
     }
@@ -133,18 +189,12 @@ export class IncomeModalComponent implements OnInit {
     this.save.emit(base);
   }
 
-  onBackdropClick(event: MouseEvent): void {
-    if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
-      this.close.emit();
-    }
-  }
-
   private updateLastRecurrenceFieldVisibility(): void {
     const recurring = !!this.form.get('recurring')!.value;
-    if (recurring) {
-      this.wasRecurringTemplate = true;
-    }
-    this.showLastRecurrenceField.set(!recurring && this.wasRecurringTemplate);
+    // Só ao editar uma receita que já era recorrente e o usuário desativa a recorrência
+    this.showLastRecurrenceField.set(
+      this.isEditMode() && !recurring && this.wasRecurringTemplate,
+    );
   }
 
   private updateLastRecurrenceValidators(): void {

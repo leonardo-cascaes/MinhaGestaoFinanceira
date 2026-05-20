@@ -48,8 +48,16 @@
           @if (expense().type === ExpenseType.SUBSCRIPTION && expense().subscription) {
             <app-subscription-badge [subscription]="expense().subscription!" />
           }
+          @if (subscriptionEndedLabel()) {
+            <span class="expense-card__ended">{{ subscriptionEndedLabel() }}</span>
+          }
           <span class="expense-card__payment">{{ paymentLabel() }}</span>
-          <span class="expense-card__date">{{ formattedDate() }}</span>
+          @if (subscriptionStartLabel()) {
+            <span class="expense-card__period">{{ subscriptionStartLabel() }}</span>
+          }
+          @if (showTransactionDate()) {
+            <span class="expense-card__date">{{ formattedDate() }}</span>
+          }
         </div>
       </div>
 

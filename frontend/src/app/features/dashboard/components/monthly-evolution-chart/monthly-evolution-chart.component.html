@@ -1,8 +1,12 @@
 <div class="chart-card">
-  <h3 class="chart-title">Evolução Mensal do Saldo</h3>
-  <p class="chart-subtitle">Últimos 12 meses</p>
+  <h3 class="chart-title">{{ title() }}</h3>
+  <p class="chart-subtitle">{{ subtitle() }}</p>
 
-  <div class="chart-container">
+  <div
+    class="chart-container"
+    data-chart-tooltips
+    data-chart-line-hover
+    [style.--chart-accent]="accentColor()">
     <ngx-charts-line-chart
       [results]="data()"
       [xAxis]="true"
@@ -10,23 +14,42 @@
       [showXAxisLabel]="false"
       [showYAxisLabel]="false"
       [legend]="false"
-      [scheme]="colorScheme"
+      [scheme]="colorScheme()"
       [autoScale]="true"
       [referenceLines]="referenceLines"
       [showRefLines]="true"
       [showRefLabels]="true"
       [yAxisTickFormatting]="formatCurrency"
-      [animations]="false">
-      <ng-template #tooltipTemplate let-model="model">
-        @if (hasTooltipValue(model)) {
-          <div class="chart-tooltip">
-            @if (tooltipSeries(model); as series) {
-              <p class="chart-tooltip__series">{{ series }}</p>
-            }
-            <p class="chart-tooltip__title">{{ tooltipCategory(model) }}</p>
-            <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
-          </div>
+      [tooltipDisabled]="false"
+      [animations]="true">
+      <ng-template #seriesTooltipTemplate let-model="model">
+        @if (seriesTooltipRows(model); as rows) {
+          @if (rows.length > 0) {
+            <div class="chart-tooltip">
+              <p class="chart-tooltip__title">{{ seriesTooltipMonth(rows) }}</p>
+              @for (row of rows; track row.series) {
+                <div class="chart-tooltip__row">
+                  @if (showSeriesName(rows)) {
+                    <span class="chart-tooltip__dot" [style.background-color]="row.color"></span>
+                    <span class="chart-tooltip__series">{{ row.series }}</span>
+                  }
+                  <span class="chart-tooltip__value chart-tooltip__value--inline">
+                    {{ formatSeriesValue(row.value) }}
+                  </span>
+                </div>
+              }
+            </div>
+          }
         }
+      </ng-template>
+      <ng-template #tooltipTemplate let-model="model">
+        <div class="chart-tooltip">
+          @if (tooltipSeries(model); as series) {
+            <p class="chart-tooltip__series">{{ series }}</p>
+          }
+          <p class="chart-tooltip__title">{{ tooltipCategory(model) }}</p>
+          <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
+        </div>
       </ng-template>
     </ngx-charts-line-chart>
   </div>

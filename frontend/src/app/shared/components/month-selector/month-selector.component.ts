@@ -1,12 +1,12 @@
-import { Component, inject, signal, computed, HostListener } from '@angular/core';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
 import {
-  trigger,
-  transition,
-  style,
-  animate,
-} from '@angular/animations';
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LucideChevronLeft, LucideChevronRight, LucideChevronDown } from '@lucide/angular';
 import { MonthContextService } from '../../../core/services/month-context.service';
 
@@ -19,26 +19,10 @@ const MESES = [
 @Component({
   selector: 'app-month-selector',
   standalone: true,
-  imports: [CommonModule, LucideChevronLeft, LucideChevronRight, LucideChevronDown],
+  imports: [LucideChevronLeft, LucideChevronRight, LucideChevronDown],
   templateUrl: './month-selector.component.html',
   styleUrl: './month-selector.component.scss',
-  animations: [
-    trigger('monthChange', [
-      transition('* <=> *', [
-        style({ opacity: 0, transform: 'translateY(-4px)' }),
-        animate('200ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
-    ]),
-    trigger('dropdownAnimation', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateX(-50%) translateY(-8px) scale(0.96)' }),
-        animate('150ms ease-out', style({ opacity: 1, transform: 'translateX(-50%) translateY(0) scale(1)' })),
-      ]),
-      transition(':leave', [
-        animate('100ms ease-in', style({ opacity: 0, transform: 'translateX(-50%) translateY(-8px) scale(0.96)' })),
-      ]),
-    ]),
-  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonthSelectorComponent {
   private readonly monthContext = inject(MonthContextService);
@@ -57,19 +41,24 @@ export class MonthSelectorComponent {
   });
 
   constructor() {
-    this.monthContext.currentMonth$
-      .pipe(takeUntilDestroyed())
-      .subscribe(({ year }) => {
-        this.dropdownYear.set(year);
-      });
-  }
+    effect(() => {
+      const { year } = this.currentMonth();
+      this.dropdownYear.set(year);
+    });
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.month-selector__dropdown-wrapper')) {
-      this.dropdownOpen.set(false);
-    }
+    effect((onCleanup) => {
+      if (!this.dropdownOpen()) {
+        return;
+      }
+      const handler = (event: MouseEvent): void => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.month-selector__dropdown-wrapper')) {
+          this.dropdownOpen.set(false);
+        }
+      };
+      document.addEventListener('click', handler, true);
+      onCleanup(() => document.removeEventListener('click', handler, true));
+    });
   }
 
   previousMonth(): void {
@@ -81,7 +70,7 @@ export class MonthSelectorComponent {
   }
 
   toggleDropdown(): void {
-    this.dropdownOpen.update(v => !v);
+    this.dropdownOpen.update((v) => !v);
   }
 
   selectMonth(month: number): void {
@@ -90,15 +79,27 @@ export class MonthSelectorComponent {
   }
 
   previousYear(): void {
-    this.dropdownYear.update(y => y - 1);
+    this.dropdownYear.update((y) => y - 1);
   }
 
   nextYear(): void {
-    this.dropdownYear.update(y => y + 1);
+    this.dropdownYear.update((y) => y + 1);
   }
 
   isCurrentSelection(monthIndex: number): boolean {
     const { month, year } = this.monthContext.currentValue;
     return month === monthIndex + 1 && year === this.dropdownYear();
+  }
+
+  isViewingCurrentMonth(): boolean {
+    const { month, year } = this.currentMonth();
+    return this.monthContext.isCurrentCalendarMonth(month, year);
+  }
+
+  goToCurrentMonth(): void {
+    this.monthContext.goToCurrentMonth();
+    const now = new Date();
+    this.dropdownYear.set(now.getFullYear());
+    this.dropdownOpen.set(false);
   }
 }

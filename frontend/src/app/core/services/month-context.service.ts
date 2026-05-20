@@ -72,4 +72,14 @@ export class MonthContextService {
     const y = year ?? this.currentValue.year;
     return `${MESES[m - 1]} ${y}`;
   }
+
+  goToCurrentMonth(): void {
+    const now = new Date();
+    this.setMonth(now.getMonth() + 1, now.getFullYear());
+  }
+
+  isCurrentCalendarMonth(month: number, year: number): boolean {
+    const now = new Date();
+    return month === now.getMonth() + 1 && year === now.getFullYear();
+  }
 }

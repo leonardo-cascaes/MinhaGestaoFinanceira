@@ -43,7 +43,12 @@
       @if (recurrenceEndLabel()) {
         <span class="income-card__ended">{{ recurrenceEndLabel() }}</span>
       }
-      <span class="income-card__date">{{ formattedDate() }}</span>
+      @if (showTransactionDate()) {
+        <span class="income-card__date">{{ formattedDate() }}</span>
+      }
+      @if (recurrenceStartLabel()) {
+        <span class="income-card__start">{{ recurrenceStartLabel() }}</span>
+      }
     </div>
   </div>
 

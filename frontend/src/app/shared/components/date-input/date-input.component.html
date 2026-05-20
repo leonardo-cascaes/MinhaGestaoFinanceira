@@ -1,20 +1,74 @@
 <div
   class="date-input"
   [class.date-input--invalid]="invalid()"
-  [class.date-input--disabled]="disabled()">
-  <span class="date-input__icon" aria-hidden="true">
-    <svg lucideCalendar [size]="18"></svg>
-  </span>
-  <span class="date-input__text">{{ displayLabel() }}</span>
-  <input
-    class="date-input__native"
-    type="date"
+  [class.date-input--disabled]="disabled()"
+  [class.date-input--open]="open()">
+  <button
+    type="button"
+    class="date-input__trigger"
     [id]="inputId()"
-    [value]="value()"
     [disabled]="disabled()"
-    [min]="min() ?? undefined"
-    [max]="max() ?? undefined"
-    (input)="onInput($event)"
-    (blur)="onBlur()"
-  />
+    [attr.aria-expanded]="open()"
+    aria-haspopup="dialog"
+    (click)="togglePicker()">
+    <span class="date-input__icon" aria-hidden="true">
+      <svg lucideCalendar [size]="18"></svg>
+    </span>
+    <span class="date-input__text">{{ displayLabel() }}</span>
+  </button>
+
+  @if (open()) {
+    <div class="date-input__popover" role="dialog" aria-label="Selecionar data">
+      <div class="date-input__header">
+        <button
+          type="button"
+          class="date-input__nav"
+          aria-label="Mês anterior"
+          (click)="previousMonth(); $event.stopPropagation()">
+          <svg lucideChevronLeft [size]="16"></svg>
+        </button>
+        <span class="date-input__title">
+          {{ months[viewMonth()] }} {{ viewYear() }}
+        </span>
+        <button
+          type="button"
+          class="date-input__nav"
+          aria-label="Próximo mês"
+          (click)="nextMonth(); $event.stopPropagation()">
+          <svg lucideChevronRight [size]="16"></svg>
+        </button>
+      </div>
+
+      <div class="date-input__weekdays">
+        @for (wd of weekdays; track wd) {
+          <span class="date-input__weekday">{{ wd }}</span>
+        }
+      </div>
+
+      <div class="date-input__grid">
+        @for (cell of calendarDays(); track cell.iso + cell.inMonth) {
+          <button
+            type="button"
+            class="date-input__day"
+            [class.date-input__day--outside]="!cell.inMonth"
+            [class.date-input__day--today]="cell.today"
+            [class.date-input__day--selected]="cell.selected"
+            [class.date-input__day--disabled]="cell.disabled"
+            [disabled]="cell.disabled"
+            (click)="selectDay(cell); $event.stopPropagation()">
+            {{ cell.day }}
+          </button>
+        }
+      </div>
+
+      <div class="date-input__footer">
+        <button
+          type="button"
+          class="date-input__today-btn"
+          (click)="goToToday(); $event.stopPropagation()">
+          Hoje
+        </button>
+      </div>
+    </div>
+  }
 </div>

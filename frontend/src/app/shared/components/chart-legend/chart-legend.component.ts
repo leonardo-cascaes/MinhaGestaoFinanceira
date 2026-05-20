@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 export interface ChartLegendItem {
   label: string;
@@ -10,6 +10,7 @@ export interface ChartLegendItem {
   standalone: true,
   templateUrl: './chart-legend.component.html',
   styleUrl: './chart-legend.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartLegendComponent {
   items = input.required<ChartLegendItem[]>();

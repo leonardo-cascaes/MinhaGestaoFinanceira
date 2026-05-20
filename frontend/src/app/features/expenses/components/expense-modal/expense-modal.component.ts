@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -6,6 +7,7 @@ import {
   input,
   OnInit,
   output,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -28,6 +30,7 @@ import { LucideX } from '@lucide/angular';
   imports: [ReactiveFormsModule, LucideX],
   templateUrl: './expense-modal.component.html',
   styleUrl: './expense-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpenseModalComponent implements OnInit {
   expense = input<Expense | null>(null);
@@ -72,6 +75,8 @@ export class ExpenseModalComponent implements OnInit {
 
   readonly ExpenseType = ExpenseType;
   isEditMode = computed(() => !!this.expense());
+  readonly selectedType = signal<ExpenseType>(ExpenseType.SINGLE);
+  readonly isFixed = signal(true);
 
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
@@ -117,24 +122,27 @@ export class ExpenseModalComponent implements OnInit {
       ],
     });
 
+    this.selectedType.set(type);
+    this.isFixed.set(!!this.form.get('subIsFixed')!.value);
+
     this.form
       .get('type')!
       .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.onTypeChange());
+      .subscribe((t: ExpenseType) => {
+        this.selectedType.set(t);
+        this.onTypeChange();
+      });
+
+    this.form
+      .get('subIsFixed')!
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((v: boolean) => this.isFixed.set(!!v));
 
     this.onTypeChange();
   }
 
-  get selectedType(): ExpenseType {
-    return this.form.get('type')!.value;
-  }
-
-  get isFixed(): boolean {
-    return this.form.get('subIsFixed')!.value;
-  }
-
   onTypeChange(): void {
-    const type = this.selectedType;
+    const type = this.selectedType();
 
     if (type === ExpenseType.INSTALLMENT) {
       this.form.get('instTotalAmount')!.setValidators([
@@ -213,9 +221,4 @@ export class ExpenseModalComponent implements OnInit {
     this.save.emit(base);
   }
 
-  onBackdropClick(event: MouseEvent): void {
-    if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
-      this.close.emit();
-    }
-  }
 }

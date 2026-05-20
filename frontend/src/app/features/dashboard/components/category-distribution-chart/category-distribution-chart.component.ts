@@ -1,4 +1,11 @@
-import { Component, computed, effect, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  signal,
+} from '@angular/core';
 import {
   NgxChartsModule,
   Color,
@@ -6,7 +13,7 @@ import {
 } from '@swimlane/ngx-charts';
 import { ChartSingleData } from '@core/services/dashboard.service';
 import {
-  applyHiddenToSingleSeries,
+  applyHiddenToSingleSeriesInPlace,
   toggleLegendLabel,
 } from '@core/utils/chart-legend-toggle.util';
 import {
@@ -15,16 +22,23 @@ import {
   sanitizeChartNumber,
 } from '@core/utils/chart-format.util';
 import {
+  CHART_CATEGORY_PALETTE,
+  colorForCategoryName,
+  customColorsForCategoryNames,
+} from '@core/utils/chart-color.util';
+import {
   ChartLegendComponent,
   ChartLegendItem,
 } from '@shared/components/chart-legend/chart-legend.component';
+import { ChartTouchTooltipsDirective } from '@shared/directives/chart-touch-tooltips.directive';
 
 @Component({
   selector: 'app-category-distribution-chart',
   standalone: true,
-  imports: [NgxChartsModule, ChartLegendComponent],
+  imports: [NgxChartsModule, ChartLegendComponent, ChartTouchTooltipsDirective],
   templateUrl: './category-distribution-chart.component.html',
   styleUrl: './category-distribution-chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryDistributionChartComponent {
   data = input.required<ChartSingleData[]>();
@@ -32,26 +46,31 @@ export class CategoryDistributionChartComponent {
   readonly hiddenCategories = signal<Set<string>>(new Set());
 
   readonly chartData = computed(() =>
-    applyHiddenToSingleSeries(this.data(), this.hiddenCategories()),
+    applyHiddenToSingleSeriesInPlace(this.data(), this.hiddenCategories()),
+  );
+
+  readonly hasVisibleSlices = computed(() =>
+    this.chartData().some((d) => sanitizeChartNumber(d.value) > 0),
+  );
+
+  /** Cores fixas por nome (lista completa), mesmo com categorias ocultas no gráfico. */
+  readonly customColors = computed(() =>
+    customColorsForCategoryNames(this.data().map((d) => d.name)),
   );
 
   readonly legendItems = computed<ChartLegendItem[]>(() =>
     this.data().map((d, i) => ({
       label: d.name,
-      color: this.colorScheme.domain[i % this.colorScheme.domain.length],
+      color: colorForCategoryName(d.name, i),
     })),
   );
 
-  readonly colorScheme: Color = {
+  readonly colorScheme = computed<Color>(() => ({
     name: 'categories',
     selectable: true,
     group: ScaleType.Ordinal,
-    domain: [
-      '#2563eb', '#10b981', '#f59e0b', '#ef4444',
-      '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
-      '#64748b',
-    ],
-  };
+    domain: [...CHART_CATEGORY_PALETTE],
+  }));
 
   constructor() {
     effect(() => {

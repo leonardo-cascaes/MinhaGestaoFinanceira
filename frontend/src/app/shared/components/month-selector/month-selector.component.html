@@ -9,7 +9,7 @@
 
   <div class="month-selector__dropdown-wrapper">
     <button class="month-selector__label" (click)="toggleDropdown()">
-      <span class="month-selector__label-text" [@monthChange]="monthLabel()">
+      <span class="month-selector__label-text">
         {{ monthLabel() }}
       </span>
       <svg
@@ -21,7 +21,7 @@
     </button>
 
     @if (dropdownOpen()) {
-      <div class="month-selector__dropdown" @dropdownAnimation>
+      <div class="month-selector__dropdown">
         <div class="month-selector__dropdown-header">
           <button
             class="month-selector__year-arrow"
@@ -51,6 +51,15 @@
             </button>
           }
         </div>
+
+        <button
+          type="button"
+          class="month-selector__today-btn"
+          [disabled]="isViewingCurrentMonth()"
+          (click)="goToCurrentMonth(); $event.stopPropagation()"
+        >
+          Ir para mês atual
+        </button>
       </div>
     }
   </div>

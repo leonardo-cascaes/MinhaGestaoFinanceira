@@ -16,6 +16,10 @@ export class IncomeService {
     return this.incomes$.asObservable();
   }
 
+  getById(id: string): Income | undefined {
+    return this.incomes$.getValue().find((i) => i.id === id);
+  }
+
   getByMonth(month: number, year: number): Observable<Income[]> {
     return this.incomes$.pipe(
       map((incomes) =>

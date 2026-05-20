@@ -1,4 +1,10 @@
-import { Component, computed, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 import {
   Expense,
   ExpenseType,
@@ -63,6 +69,10 @@ const dateFmt = new Intl.DateTimeFormat('pt-BR', {
   year: 'numeric',
 });
 
+function formatMonthYear(month: number, year: number): string {
+  return `${String(month).padStart(2, '0')}/${year}`;
+}
+
 @Component({
   selector: 'app-expense-card',
   standalone: true,
@@ -84,6 +94,7 @@ const dateFmt = new Intl.DateTimeFormat('pt-BR', {
   ],
   templateUrl: './expense-card.component.html',
   styleUrl: './expense-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpenseCardComponent {
   expense = input.required<Expense>();
@@ -104,6 +115,39 @@ export class ExpenseCardComponent {
     const d = this.expense().date;
     return dateFmt.format(d instanceof Date ? d : new Date(d));
   });
+
+  subscriptionStartLabel = computed(() => {
+    const exp = this.expense();
+    const sub = exp.subscription;
+    if (exp.type !== ExpenseType.SUBSCRIPTION || !sub) {
+      return '';
+    }
+    return `Início: ${formatMonthYear(sub.startMonth, sub.startYear)}`;
+  });
+
+  subscriptionEndedLabel = computed(() => {
+    const exp = this.expense();
+    const sub = exp.subscription;
+    if (exp.type !== ExpenseType.SUBSCRIPTION || !sub) {
+      return '';
+    }
+    if (sub.cancelledAt) {
+      const d =
+        sub.cancelledAt instanceof Date
+          ? sub.cancelledAt
+          : new Date(sub.cancelledAt);
+      return `Encerrada em ${dateFmt.format(d)}`;
+    }
+    if (sub.endMonth != null && sub.endYear != null) {
+      return `Encerrada em ${formatMonthYear(sub.endMonth, sub.endYear)}`;
+    }
+    return '';
+  });
+
+  /** Data do lançamento no mês — não exibir em assinaturas (usam Início/Final). */
+  showTransactionDate = computed(
+    () => this.expense().type !== ExpenseType.SUBSCRIPTION,
+  );
 
   canAdvance = computed(() => {
     const exp = this.expense();

@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import { LucideMenu } from '@lucide/angular';
 import { MonthSelectorComponent } from '../../../shared/components/month-selector/month-selector.component';
 
@@ -8,6 +8,7 @@ import { MonthSelectorComponent } from '../../../shared/components/month-selecto
   imports: [LucideMenu, MonthSelectorComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   toggleSidebar = output<void>();

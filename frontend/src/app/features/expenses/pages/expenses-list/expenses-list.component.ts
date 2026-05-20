@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -46,6 +47,7 @@ const currencyFmt = new Intl.NumberFormat('pt-BR', {
   ],
   templateUrl: './expenses-list.component.html',
   styleUrl: './expenses-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpensesListComponent implements OnInit {
   private readonly monthCtx = inject(MonthContextService);

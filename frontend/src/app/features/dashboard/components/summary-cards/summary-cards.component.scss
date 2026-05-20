@@ -1,15 +1,7 @@
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--spacing-md);
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
 }
 
 .summary-card {
@@ -120,5 +112,40 @@
 
   .card-value {
     color: var(--color-warning);
+  }
+}
+
+.card-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+.card--accumulated-positive {
+  border-left-color: #7c3aed;
+
+  .card-icon {
+    background: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
+  }
+
+  .card-value {
+    color: #7c3aed;
+  }
+}
+
+.card--accumulated-negative {
+  border-left-color: var(--color-danger);
+
+  .card-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+  }
+
+  .card-value {
+    color: var(--color-danger);
   }
 }

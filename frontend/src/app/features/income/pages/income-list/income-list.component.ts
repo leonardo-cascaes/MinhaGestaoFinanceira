@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -31,6 +32,7 @@ const currencyFmt = new Intl.NumberFormat('pt-BR', {
   ],
   templateUrl: './income-list.component.html',
   styleUrl: './income-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeListComponent implements OnInit {
   private readonly monthCtx = inject(MonthContextService);
@@ -69,7 +71,8 @@ export class IncomeListComponent implements OnInit {
   }
 
   openEditModal(income: Income): void {
-    this.editingIncome.set(income);
+    const original = this.incomeService.getById(income.id) ?? income;
+    this.editingIncome.set(original);
     this.showModal.set(true);
   }
 

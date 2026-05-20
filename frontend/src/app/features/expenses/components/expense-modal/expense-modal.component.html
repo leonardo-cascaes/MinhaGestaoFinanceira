@@ -1,4 +1,4 @@
-<div class="modal-overlay" (click)="onBackdropClick($event)">
+<div class="modal-overlay">
   <div class="modal">
     <div class="modal__header">
       <h3>{{ isEditMode() ? 'Editar Despesa' : 'Nova Despesa' }}</h3>
@@ -47,7 +47,7 @@
       </div>
 
       <!-- Valor + Método de pagamento (para avulsa e assinatura) -->
-      @if (selectedType !== ExpenseType.INSTALLMENT) {
+      @if (selectedType() !== ExpenseType.INSTALLMENT) {
         <div class="form-row">
           <div class="form-group">
             <label for="exp-amount">Valor (R$) *</label>
@@ -79,7 +79,7 @@
       }
 
       <!-- ─── Campos de Assinatura ─── -->
-      @if (selectedType === ExpenseType.SUBSCRIPTION) {
+      @if (selectedType() === ExpenseType.SUBSCRIPTION) {
         <div class="form-section">
           <h4 class="form-section__title">Dados da Assinatura</h4>
 
@@ -120,7 +120,7 @@
             </div>
           </div>
 
-          @if (!isFixed) {
+          @if (!isFixed()) {
             <div class="form-row">
               <div class="form-group">
                 <label for="sub-end-month">Mês Fim</label>
@@ -154,7 +154,7 @@
       }
 
       <!-- ─── Campos de Parcelamento ─── -->
-      @if (selectedType === ExpenseType.INSTALLMENT) {
+      @if (selectedType() === ExpenseType.INSTALLMENT) {
         <div class="form-section">
           <h4 class="form-section__title">Dados do Parcelamento</h4>
 

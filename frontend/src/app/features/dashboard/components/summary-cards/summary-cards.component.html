@@ -38,4 +38,23 @@
       <span class="card-value">{{ balance().savingsRate | number: '1.1-1' }}%</span>
     </div>
   </div>
+
+  <div
+    class="summary-card"
+    [ngClass]="
+      balance().accumulatedBalance >= 0
+        ? 'card--accumulated-positive'
+        : 'card--accumulated-negative'
+    ">
+    <div class="card-icon">
+      <svg lucideLandmark [size]="24"></svg>
+    </div>
+    <div class="card-content">
+      <span class="card-label">Patrimônio Acumulado</span>
+      <span class="card-value">{{
+        balance().accumulatedBalance | currency: 'BRL' : 'symbol' : '1.2-2'
+      }}</span>
+      <span class="card-hint">Saldos dos meses com movimentação até aqui</span>
+    </div>
+  </div>
 </div>

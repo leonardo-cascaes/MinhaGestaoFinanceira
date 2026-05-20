@@ -1,4 +1,14 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
@@ -22,6 +32,7 @@ const currencyFmt = new Intl.NumberFormat('pt-BR', {
   imports: [ReactiveFormsModule, LucideX, LucideAlertTriangle, DecimalPipe],
   templateUrl: './advance-modal.component.html',
   styleUrl: './advance-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdvanceModalComponent implements OnInit {
   expense = input.required<Expense>();
@@ -108,9 +119,4 @@ export class AdvanceModalComponent implements OnInit {
     this.confirm.emit({ expenseId: this.expense().id, info });
   }
 
-  onBackdropClick(event: MouseEvent): void {
-    if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
-      this.close.emit();
-    }
-  }
 }

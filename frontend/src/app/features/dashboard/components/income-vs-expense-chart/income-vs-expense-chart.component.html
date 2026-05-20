@@ -2,7 +2,7 @@
   <h3 class="chart-title">Receitas vs Despesas</h3>
   <p class="chart-subtitle">Últimos 6 meses</p>
 
-  <div class="chart-container">
+  <div class="chart-container" data-chart-tooltips>
     <ngx-charts-bar-vertical-2d
       [results]="chartData()"
       [xAxis]="true"
@@ -11,21 +11,21 @@
       [showYAxisLabel]="false"
       [legend]="false"
       [scheme]="colorScheme"
+      [customColors]="customColors"
       [groupPadding]="8"
       [barPadding]="4"
       [roundEdges]="true"
       [yAxisTickFormatting]="formatCurrency"
-      [animations]="false">
+      [tooltipDisabled]="false"
+      [animations]="true">
       <ng-template #tooltipTemplate let-model="model">
-        @if (hasTooltipValue(model)) {
-          <div class="chart-tooltip">
-            @if (tooltipSeries(model); as series) {
-              <p class="chart-tooltip__series">{{ series }}</p>
-            }
-            <p class="chart-tooltip__title">{{ tooltipCategory(model) }}</p>
-            <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
-          </div>
-        }
+        <div class="chart-tooltip">
+          @if (tooltipSeries(model); as series) {
+            <p class="chart-tooltip__series">{{ series }}</p>
+          }
+          <p class="chart-tooltip__title">{{ tooltipCategory(model) }}</p>
+          <p class="chart-tooltip__value">{{ tooltipValue(model) }}</p>
+        </div>
       </ng-template>
     </ngx-charts-bar-vertical-2d>
   </div>

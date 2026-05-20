@@ -1,8 +1,16 @@
-import { Component, computed, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 import { Income, IncomeType } from '@core/models/income.model';
 import {
+  getRecurrenceStartDate,
   hasRecurrenceEnded,
   isRecurringActive,
+  isRecurringTemplate,
 } from '@core/utils/income-recurrence.util';
 import {
   LucideBriefcase,
@@ -52,6 +60,7 @@ const dateFmt = new Intl.DateTimeFormat('pt-BR', {
   ],
   templateUrl: './income-card.component.html',
   styleUrl: './income-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeCardComponent {
   income = input.required<Income>();
@@ -68,6 +77,17 @@ export class IncomeCardComponent {
     const d = this.income().date;
     return dateFmt.format(d instanceof Date ? d : new Date(d));
   });
+
+  recurrenceStartLabel = computed(() => {
+    const inc = this.income();
+    if (!isRecurringTemplate(inc)) {
+      return '';
+    }
+    return `Início: ${dateFmt.format(getRecurrenceStartDate(inc))}`;
+  });
+
+  /** Data do lançamento no mês — oculta em receitas recorrentes (usam Início/Encerrada). */
+  showTransactionDate = computed(() => !isRecurringTemplate(this.income()));
 
   isActiveRecurring = computed(() => isRecurringActive(this.income()));
 

@@ -4,12 +4,25 @@ function toAbsoluteMonth(month: number, year: number): number {
   return year * 12 + month;
 }
 
+export function isRecurringTemplate(income: Income): boolean {
+  return income.recurring || hasRecurrenceEnded(income);
+}
+
 export function hasRecurrenceEnded(income: Income): boolean {
   return income.recurringEndMonth != null && income.recurringEndYear != null;
 }
 
 export function isRecurringActive(income: Income): boolean {
   return income.recurring && !hasRecurrenceEnded(income);
+}
+
+export function getRecurrenceStartDate(income: Income): Date {
+  const anchor = income.recurringStartDate ?? income.date;
+  return anchor instanceof Date ? anchor : new Date(anchor);
+}
+
+export function getRecurrenceDayOfMonth(income: Income): number {
+  return getRecurrenceStartDate(income).getDate();
 }
 
 export function isIncomeVisibleInMonth(
@@ -22,10 +35,7 @@ export function isIncomeVisibleInMonth(
 
   if (target < start) return false;
 
-  const isRecurringTemplate =
-    income.recurring || hasRecurrenceEnded(income);
-
-  if (!isRecurringTemplate) {
+  if (!isRecurringTemplate(income)) {
     return income.month === month && income.year === year;
   }
 
@@ -45,18 +55,20 @@ export function projectIncomeForMonth(
   month: number,
   year: number,
 ): Income {
-  if (income.month === month && income.year === year) {
+  if (!isRecurringTemplate(income)) {
     return income;
   }
 
-  const source = income.date instanceof Date ? income.date : new Date(income.date);
-  const day = source.getDate();
+  const startDate = getRecurrenceStartDate(income);
+  const day = startDate.getDate();
   const lastDay = new Date(year, month, 0).getDate();
+  const paymentDate = new Date(year, month - 1, Math.min(day, lastDay));
 
   return {
     ...income,
     month,
     year,
-    date: new Date(year, month - 1, Math.min(day, lastDay)),
+    date: paymentDate,
+    recurringStartDate: startDate,
   };
 }

@@ -88,6 +88,26 @@ export class DashboardService {
     );
   }
 
+  getPatrimonyEvolutionData(): Observable<ChartGroupedData[]> {
+    return this.monthContext.currentMonth$.pipe(
+      switchMap(({ month, year }) =>
+        this.balanceService
+          .getAccumulatedBalanceHistoryFrom(month, year, 12)
+          .pipe(
+            map((points) => [
+              {
+                name: 'Patrimônio',
+                series: points.map((p) => ({
+                  name: `${MONTH_SHORT[p.month - 1]}/${p.year}`,
+                  value: sanitizeChartNumber(p.accumulatedBalance),
+                })),
+              },
+            ]),
+          ),
+      ),
+    );
+  }
+
   getCategoryDistribution(): Observable<ChartSingleData[]> {
     return this.monthContext.currentMonth$.pipe(
       switchMap(({ month, year }) =>

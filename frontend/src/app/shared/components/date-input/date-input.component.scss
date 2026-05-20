@@ -1,30 +1,51 @@
 .date-input {
   position: relative;
+  width: 100%;
+}
+
+.date-input__trigger {
+  position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
   min-height: 2.5rem;
   padding: 0 0.75rem 0 2.5rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
+  text-align: left;
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
 
-  &:focus-within {
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary-light);
+  }
+
+  &:focus-visible {
+    outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
 
-  &--invalid {
-    border-color: var(--color-danger);
+  &:disabled {
+    cursor: not-allowed;
   }
+}
 
-  &--disabled {
-    opacity: 0.65;
-    pointer-events: none;
-    background: var(--color-bg);
-  }
+.date-input--open .date-input__trigger {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.date-input--invalid .date-input__trigger {
+  border-color: var(--color-danger);
+}
+
+.date-input--disabled .date-input__trigger {
+  opacity: 0.65;
+  pointer-events: none;
+  background: var(--color-bg);
 }
 
 .date-input__icon {
@@ -39,27 +60,130 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text);
-  pointer-events: none;
-  user-select: none;
 }
 
-.date-input__native {
+.date-input__popover {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  opacity: 0;
-  cursor: pointer;
-  font-size: 1rem;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 200;
+  width: min(100%, 280px);
+  padding: var(--spacing-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
 
-  &::-webkit-calendar-picker-indicator {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
+.date-input__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+}
+
+.date-input__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.date-input__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--color-bg);
+    color: var(--color-primary);
+  }
+}
+
+.date-input__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.date-input__weekday {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.date-input__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.date-input__day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: all 0.12s ease;
+
+  &:hover:not(:disabled):not(.date-input__day--selected) {
+    background: var(--color-bg);
+    color: var(--color-primary);
+  }
+
+  &--outside {
+    color: var(--color-text-muted);
+    opacity: 0.55;
+  }
+
+  &--today:not(.date-input__day--selected) {
+    border: 1px solid var(--color-primary-light);
+    color: var(--color-primary);
+  }
+
+  &--selected {
+    background: var(--color-primary);
+    color: #fff;
+
+    &:hover {
+      background: var(--color-primary-dark);
+      color: #fff;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.date-input__footer {
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.date-input__today-btn {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--color-bg);
   }
 }

@@ -1,25 +1,28 @@
-@if (balance$ | async; as balance) {
+@if (view(); as v) {
   <section class="dashboard">
-    <app-summary-cards [balance]="balance" />
+    <app-summary-cards [balance]="v.balance" />
 
     <div class="charts-row">
-      @if (incomeVsExpense$ | async; as incomeVsExpense) {
-        <div class="chart-col">
-          <app-income-vs-expense-chart [data]="incomeVsExpense" />
-        </div>
-      }
+      <div class="chart-col">
+        <app-income-vs-expense-chart [data]="v.incomeVsExpense" />
+      </div>
 
-      @if (categoryDistribution$ | async; as categoryData) {
-        <div class="chart-col">
-          <app-category-distribution-chart [data]="categoryData" />
-        </div>
-      }
+      <div class="chart-col">
+        <app-category-distribution-chart [data]="v.categoryDistribution" />
+      </div>
     </div>
 
-    @if (monthlyEvolution$ | async; as evolution) {
-      <div class="chart-full">
-        <app-monthly-evolution-chart [data]="evolution" />
-      </div>
-    }
+    <div class="chart-full">
+      <app-monthly-evolution-chart [data]="v.monthlyEvolution" />
+    </div>
+
+    <div class="chart-full">
+      <app-monthly-evolution-chart
+        [data]="v.patrimonyEvolution"
+        title="Evolução do Patrimônio"
+        subtitle="Patrimônio acumulado — últimos 12 meses"
+        accentColor="#7c3aed"
+      />
+    </div>
   </section>
 }

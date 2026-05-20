@@ -22,4 +22,43 @@
 .chart-container {
   flex: 1;
   min-height: 300px;
+
+  ::ng-deep {
+    .line-chart {
+      .tooltip-area {
+        pointer-events: all !important;
+      }
+
+      .tooltip-area rect {
+        fill: transparent !important;
+        stroke: none;
+        pointer-events: all !important;
+      }
+
+      .line-highlight {
+        display: block;
+        stroke: var(--chart-accent, var(--color-primary));
+        stroke-width: 1.5;
+        stroke-dasharray: 4 4;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+
+      .line-highlight.active {
+        opacity: 0.45;
+      }
+
+      .circle-series circle {
+        transition:
+          r 0.15s ease,
+          opacity 0.15s ease;
+      }
+
+      .circle-series circle.active {
+        opacity: 1 !important;
+        stroke: var(--chart-accent, var(--color-primary));
+        stroke-width: 2px;
+      }
+    }
+  }
 }

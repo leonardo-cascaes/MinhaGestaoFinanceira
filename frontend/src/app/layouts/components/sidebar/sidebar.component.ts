@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideLayoutDashboard, LucideTrendingUp, LucideCreditCard } from '@lucide/angular';
 
@@ -8,6 +8,7 @@ import { LucideLayoutDashboard, LucideTrendingUp, LucideCreditCard } from '@luci
   imports: [RouterLink, RouterLinkActive, LucideLayoutDashboard, LucideTrendingUp, LucideCreditCard],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
   collapsed = input(false);
